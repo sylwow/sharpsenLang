@@ -9,5 +9,7 @@ namespace anal {
             scrf::ScriptFile* _scriptFile;
         public:
             void anayze(scrf::ScriptFile& scriptFile);
+        private:
+            int getTabs(std::string& line);        
     };
 }

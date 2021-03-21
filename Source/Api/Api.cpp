@@ -24,6 +24,10 @@ namespace api {
             invalidFileExtension(filename.extension());
             return;
         }
+        if (!std::filesystem::exists(filename)) {
+            filescriptDoesNotExists(filename);
+            return;
+        }
         _ok = true;
         _script = filename;
     }
@@ -38,5 +42,9 @@ namespace api {
 
     void Api::invalidFileExtension(std::filesystem::path extension) {
         std::cout << "Invalid script file extension: " << extension << " should be .srp file" << std::endl;
+    }
+
+    void Api::filescriptDoesNotExists(std::filesystem::path script) {
+        std::cout << "File does not exists: " << script << std::endl;
     }
 }

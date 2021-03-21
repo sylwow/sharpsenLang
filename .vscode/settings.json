@@ -1,4 +1,9 @@
 {
+    "cmake.debugConfig": {
+        "args": [
+            "script.srp"
+        ]
+    },
     "cmake.sourceDirectory": "${workspaceFolder}/.",
     "files.associations": {
         "atomic": "cpp",
@@ -57,5 +62,6 @@
         "xlocmes": "cpp",
         "xlocmon": "cpp",
         "xloctime": "cpp",
+        "functional": "cpp"
     }
 }

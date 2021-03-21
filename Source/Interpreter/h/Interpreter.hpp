@@ -12,7 +12,7 @@ namespace intrp {
             scrf::ScriptFile _scriptFile;
             std::filesystem::path _script;
         public:
-            void load(std::filesystem::path script);
+            void load(std::filesystem::path& script);
             void run();
     };
 }
