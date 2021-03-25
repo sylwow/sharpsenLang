@@ -12,6 +12,6 @@ namespace intrp {
     }
 
     void Interpreter::run() {
-        std::cout << "asdasdsdddddd!\n";
+        _analyzer.anayze(_scriptFile);
     }
 }

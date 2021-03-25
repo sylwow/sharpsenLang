@@ -4,6 +4,7 @@
             "script.srp"
         ]
     },
+    "cmake.preferredGenerators": [ "Ninja" ],
     "cmake.sourceDirectory": "${workspaceFolder}/.",
     "files.associations": {
         "atomic": "cpp",
@@ -62,6 +63,10 @@
         "xlocmes": "cpp",
         "xlocmon": "cpp",
         "xloctime": "cpp",
-        "functional": "cpp"
+        "functional": "cpp",
+        "fstream": "cpp",
+        "unordered_map": "cpp",
+        "xhash": "cpp",
+        "regex": "cpp"
     }
 }
