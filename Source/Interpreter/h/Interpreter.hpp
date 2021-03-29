@@ -2,13 +2,13 @@
 #include <iostream>
 #include <filesystem>
 #include "IInterpreter.hpp"
-#include "Analyzer.hpp"
+#include "Compiler.hpp"
 #include "ScriptFile.hpp"
 
 namespace intrp {
     class Interpreter: public IInterpreter {
         private:
-            anal::Analyzer _analyzer;
+            anal::Compiler _Compiler;
             scrf::ScriptFile _scriptFile;
             std::filesystem::path _script;
         public:

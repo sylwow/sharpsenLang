@@ -2,7 +2,7 @@
 
 namespace anal
 {
-    enum class AnalyzerState {
+    enum class CompilerState {
         GlobalScope,
         FunctionScope,
         ClassScope,

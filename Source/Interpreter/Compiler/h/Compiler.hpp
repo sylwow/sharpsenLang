@@ -2,20 +2,22 @@
 #include <iostream>
 #include <regex>
 #include <filesystem>
+#include <unordered_map>
 #include "ScriptFile.hpp"
-#include "AnalyzerState.hpp"
+#include "CompilerState.hpp"
 #include "Instruction.hpp"
 #include "BinaryInstructions.hpp"
 
 namespace anal {
-    class Analyzer {
+    class Compiler {
         private:
             scrf::ScriptFile* _scriptFile;
-            AnalyzerState _state = AnalyzerState::GlobalScope;
+            CompilerState _state = CompilerState::GlobalScope;
             size_t _lineCounter = 0;
             BinaryInstructions _instructions;
+            std::vector<std::unordered_map<std::string, int>> scopeNames;
         public:
-            void anayze(scrf::ScriptFile& scriptFile);
+            void compile(scrf::ScriptFile& scriptFile);
         private:
             int getTabs(const std::string& line);
             void analyzeLines();

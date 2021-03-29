@@ -1,17 +1,18 @@
-#include "Analyzer.hpp"
+#include "Compiler.hpp"
 #include "SyntaxError.hpp"
 #include "InstructionStatements.hpp"
 #include <filesystem>
 #include <regex>
 
 namespace anal {
-    void Analyzer::anayze(scrf::ScriptFile& scriptFile) {
+    void Compiler::compile(scrf::ScriptFile& scriptFile) {
         _scriptFile = &scriptFile;
+        scopeNames.push_back({});
         analyzeLines();
     }
 
-    void Analyzer::analyzeLines() {
-        _state = AnalyzerState::GlobalScope;
+    void Compiler::analyzeLines() {
+        _state = CompilerState::GlobalScope;
         auto len = _scriptFile->getLinesNumber();
         try {
             for(_lineCounter = 0; _lineCounter < len; ++_lineCounter) {
@@ -26,7 +27,7 @@ namespace anal {
         }
     }
 
-    int Analyzer::getTabs(const std::string& line) {
+    int Compiler::getTabs(const std::string& line) {
         int tabs = 0;
         for(int i = 0; i < line.size(); i++) {
             if(line.at(i) == '\t') {
@@ -36,10 +37,10 @@ namespace anal {
         return tabs;
     }
 
-    void Analyzer::analyzeTabs(const size_t tabs) {
+    void Compiler::analyzeTabs(const size_t tabs) {
         switch (_state)
         {
-            case AnalyzerState::GlobalScope:
+            case CompilerState::GlobalScope:
                 if (tabs != 0) 
                     throw SyntaxError("Do not insert tabs in global scope");
                 break;
@@ -49,14 +50,14 @@ namespace anal {
         }
     }
 
-    void Analyzer::analyzeLine(const std::string& line) {
+    void Compiler::analyzeLine(const std::string& line) {
         std::smatch cm;
         if (std::regex_match(line, cm, std::regex(NEW_INTEGER))) {
             makeInteger(cm);
         }
     }
 
-    void Analyzer::makeInteger(const std::smatch& match) {
+    void Compiler::makeInteger(const std::smatch& match) {
         int32_t integer;
         auto strInt = match[2].str();
         try {

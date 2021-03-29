@@ -12,6 +12,6 @@ namespace intrp {
     }
 
     void Interpreter::run() {
-        _analyzer.anayze(_scriptFile);
+        _Compiler.compile(_scriptFile);
     }
 }
