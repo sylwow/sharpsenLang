@@ -3,20 +3,35 @@
 #include "InstructionStatements.hpp"
 #include <filesystem>
 #include <regex>
+#include <fstream>
 
 namespace anal {
-    void Compiler::compile(scrf::ScriptFile& scriptFile) {
-        _scriptFile = &scriptFile;
-        scopeNames.push_back({});
-        analyzeLines();
+    void Compiler::compile(std::filesystem::path& scriptFile) {
+        auto& byteFile = scriptFile.replace_extension(".sbyc");
+        if (std::filesystem::exists(byteFile)) {
+            loadByteCode(byteFile);
+        } else {
+            scopeNames.push_back({});
+            analyzeLines();
+        }
+    }
+
+    void Compiler::loadByteCode(std::filesystem::path& byteFilePath) {
+         std::ifstream byteFile(byteFilePath, std::ios::binary);
+
+        std::vector<char> bytes(
+         (std::istreambuf_iterator<char>(byteFile)),
+         (std::istreambuf_iterator<char>()));
+
+        byteFile.close();
     }
 
     void Compiler::analyzeLines() {
         _state = CompilerState::GlobalScope;
-        auto len = _scriptFile->getLinesNumber();
+        auto len = _scriptFile.getLinesNumber();
         try {
             for(_lineCounter = 0; _lineCounter < len; ++_lineCounter) {
-                auto& line = _scriptFile->getLine(_lineCounter);
+                auto& line = _scriptFile.getLine(_lineCounter);
                 int tabs = getTabs(line);
                 analyzeTabs(tabs);
                 const auto& rawLine = line.substr(tabs);
