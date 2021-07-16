@@ -25,7 +25,7 @@ namespace sharpsenLang
 			std::sort(_container.begin(), _container.end());
 		}
 
-		Lookup(container_type container) : _container(std::move(container))
+		Lookup(ContainerType container) : _container(std::move(container))
 		{
 			std::sort(_container.begin(), _container.end());
 		}
