@@ -2,9 +2,10 @@
 
 namespace sharpsenLang
 {
-	PushBackStream::PushBackStream(const GetCharacter *input) : _input(*input),
-																_lineNumber(0),
-																_charIndex(0)
+	PushBackStream::PushBackStream(const GetCharacter *input)
+		: _input(*input),
+		  _lineNumber(0),
+		  _charIndex(0)
 	{
 	}
 

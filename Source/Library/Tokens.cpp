@@ -101,20 +101,21 @@ namespace sharpsenLang
 
 			{"public", ReservedToken::kw_public}};
 
-		const Lookup<ReservedToken, std::string_view> tokenStringMap = ([]()
-																		  {
-																			  std::vector<std::pair<ReservedToken, std::string_view>> container;
-																			  container.reserve(operatorTokenMap.size() + keywordTokenMap.size());
-																			  for (const auto &p : operatorTokenMap)
-																			  {
-																				  container.emplace_back(p.second, p.first);
-																			  }
-																			  for (const auto &p : keywordTokenMap)
-																			  {
-																				  container.emplace_back(p.second, p.first);
-																			  }
-																			  return Lookup<ReservedToken, std::string_view>(std::move(container));
-																		  })();
+		const Lookup<ReservedToken, std::string_view> tokenStringMap =
+			([]()
+			 {
+				 std::vector<std::pair<ReservedToken, std::string_view>> container;
+				 container.reserve(operatorTokenMap.size() + keywordTokenMap.size());
+				 for (const auto &p : operatorTokenMap)
+				 {
+					 container.emplace_back(p.second, p.first);
+				 }
+				 for (const auto &p : keywordTokenMap)
+				 {
+					 container.emplace_back(p.second, p.first);
+				 }
+				 return Lookup<ReservedToken, std::string_view>(std::move(container));
+			 })();
 	}
 
 	std::optional<ReservedToken> getKeyword(std::string_view word)
@@ -188,9 +189,10 @@ namespace sharpsenLang
 		return ret;
 	}
 
-	Token::Token(TokenValue value, size_t lineNumber, size_t charIndex) : _value(std::move(value)),
-																			_lineNumber(lineNumber),
-																			_charIndex(charIndex)
+	Token::Token(TokenValue value, size_t lineNumber, size_t charIndex)
+		: _value(std::move(value)),
+		  _lineNumber(lineNumber),
+		  _charIndex(charIndex)
 	{
 	}
 
@@ -290,26 +292,27 @@ namespace std
 
 	std::string to_string(const TokenValue &t)
 	{
-		return std::visit(overloaded{[](ReservedToken rt)
-									 {
-										 return to_string(rt);
-									 },
-									 [](double d)
-									 {
-										 return to_string(d);
-									 },
-									 [](const std::string &str)
-									 {
-										 return str;
-									 },
-									 [](const Identifier &id)
-									 {
-										 return id.name;
-									 },
-									 [](Eof)
-									 {
-										 return std::string("<EOF>");
-									 }},
-						  t);
+		return std::visit(
+			overloaded{[](ReservedToken rt)
+					   {
+						   return to_string(rt);
+					   },
+					   [](double d)
+					   {
+						   return to_string(d);
+					   },
+					   [](const std::string &str)
+					   {
+						   return str;
+					   },
+					   [](const Identifier &id)
+					   {
+						   return id.name;
+					   },
+					   [](Eof)
+					   {
+						   return std::string("<EOF>");
+					   }},
+			t);
 	}
 }

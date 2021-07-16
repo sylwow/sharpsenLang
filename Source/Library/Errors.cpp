@@ -4,9 +4,10 @@
 
 namespace sharpsenLang
 {
-	Error::Error(std::string message, size_t lineNumber, size_t charIndex) noexcept : _message(std::move(message)),
-																					  _lineNumber(lineNumber),
-																					  _charIndex(charIndex)
+	Error::Error(std::string message, size_t lineNumber, size_t charIndex) noexcept
+		: _message(std::move(message)),
+		  _lineNumber(lineNumber),
+		  _charIndex(charIndex)
 	{
 	}
 
