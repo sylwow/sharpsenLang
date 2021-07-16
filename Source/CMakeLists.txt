@@ -1,14 +1,10 @@
-add_subdirectory(Types)
-add_subdirectory(Api)
-add_subdirectory(Interpreter)
 
-add_executable(sharpcore main.cpp)
+add_subdirectory(Library)
 
-target_link_libraries(sharpcore
-    Interpreter
-    Api
-    Types)
+add_executable(SharpsenLang
+  main.cpp
+)
 
-target_include_directories(sharpcore PUBLIC 
-    "Interpreter/h"
-    "Api/h")
+target_link_libraries(SharpsenLang 
+  SharpsenLangLib
+)
