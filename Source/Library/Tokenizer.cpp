@@ -46,7 +46,7 @@ namespace sharpsenLang
 
 			int c = stream();
 
-			bool is_number = isdigit(c);
+			bool isNumber = isdigit(c);
 
 			do
 			{
@@ -59,7 +59,7 @@ namespace sharpsenLang
 					word.pop_back();
 					break;
 				}
-			} while (getCharacterType(c) == CharacterType::alphanum || (is_number && c == '.'));
+			} while (getCharacterType(c) == CharacterType::alphanum || (isNumber && c == '.'));
 
 			stream.pushBack(c);
 
