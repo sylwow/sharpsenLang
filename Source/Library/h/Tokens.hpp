@@ -129,7 +129,7 @@ namespace sharpsenLang
 		size_t _charIndex;
 
 	public:
-		Token(TokenValue value, size_t lineNumber, size_t charIndex);
+		Token(TokenValue value, size_t lineNumber = 0, size_t charIndex = 0);
 
 		bool isReservedToken() const;
 		bool isIdentifier() const;
@@ -148,6 +148,9 @@ namespace sharpsenLang
 
 		bool hasValue(const TokenValue &value) const;
 	};
+
+	bool operator==(const Token &, const Token &);
+	bool operator!=(const Token &, const Token &);
 }
 
 namespace std

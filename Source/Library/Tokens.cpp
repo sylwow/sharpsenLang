@@ -261,6 +261,16 @@ namespace sharpsenLang
 		return _value == value;
 	}
 
+	bool operator==(const Token &t1, const Token &t2)
+	{
+		return t1.hasValue(t2.getValue());
+	}
+
+	bool operator!=(const Token &t1, const Token &t2)
+	{
+		return !(t1 == t2);
+	}
+
 	bool operator==(const Identifier &id1, const Identifier &id2)
 	{
 		return id1.name == id2.name;
