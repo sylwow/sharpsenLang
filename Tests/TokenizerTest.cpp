@@ -61,21 +61,38 @@ TEST_F(TokenizerTest, EmptyTest)
 
     auto result = getResult(input);
 
-    std::vector<Token> expected{};
+    std::vector<Token> expected;
     EXPECT_EQ(expected, result);
 }
 
-TEST_F(TokenizerTest, VarLine)
+TEST_F(TokenizerTest, NumberLine)
 {
-    auto input = "var g = 13";
+    auto input = "number g = 13;";
 
     auto result = getResult(input);
 
     std::vector<Token> expected{
-        {Identifier{"var"}},
+        {ReservedToken::kw_number},
         {Identifier{"g"}},
         {ReservedToken::assign},
         {13.0},
+        {ReservedToken::semicolon},
+    };
+    EXPECT_EQ(expected, result);
+}
+
+TEST_F(TokenizerTest, StringLine)
+{
+    auto input = "string g = \"hello my friend\";";
+
+    auto result = getResult(input);
+
+    std::vector<Token> expected{
+        {ReservedToken::kw_string},
+        {Identifier{"g"}},
+        {ReservedToken::assign},
+        {"hello my friend"},
+        {ReservedToken::semicolon},
     };
     EXPECT_EQ(expected, result);
 }
@@ -197,6 +214,41 @@ TEST_F(TokenizerTest, MultilineComment)
         {ReservedToken::close_round},
         {ReservedToken::open_curly},
         {ReservedToken::close_curly},
+    };
+    EXPECT_EQ(expected, result);
+}
+
+TEST_F(TokenizerTest, MathematicalOperations)
+{
+    auto input = R"code(
+        number x = 90;
+        x += ((12+5/13)*8)/15;
+        )code";
+
+    auto result = getResult(input);
+
+    std::vector<Token> expected{
+        {ReservedToken::kw_number},
+        {Identifier{"x"}},
+        {ReservedToken::assign},
+        {90.0},
+        {ReservedToken::semicolon},
+        {Identifier{"x"}},
+        {ReservedToken::add_assign},
+        {ReservedToken::open_round},
+        {ReservedToken::open_round},
+        {12.0},
+        {ReservedToken::add},
+        {5.0},
+        {ReservedToken::div},
+        {13.0},
+        {ReservedToken::close_round},
+        {ReservedToken::mul},
+        {8.0},
+        {ReservedToken::close_round},
+        {ReservedToken::div},
+        {15.0},
+        {ReservedToken::semicolon},
     };
     EXPECT_EQ(expected, result);
 }
