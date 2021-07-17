@@ -8,6 +8,19 @@
 
 using namespace sharpsenLang;
 
+namespace sharpsenLang
+{
+    bool operator==(const Token &t1, const Token &t2)
+    {
+        return t1.hasValue(t2.getValue());
+    }
+
+    bool operator!=(const Token &t1, const Token &t2)
+    {
+        return !(t1 == t2);
+    }
+}
+
 class TokenizerTest : public ::testing::Test
 {
 protected:

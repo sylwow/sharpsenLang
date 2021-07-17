@@ -148,9 +148,6 @@ namespace sharpsenLang
 
 		bool hasValue(const TokenValue &value) const;
 	};
-
-	bool operator==(const Token &, const Token &);
-	bool operator!=(const Token &, const Token &);
 }
 
 namespace std
