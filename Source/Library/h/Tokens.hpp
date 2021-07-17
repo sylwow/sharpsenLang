@@ -100,8 +100,6 @@ namespace sharpsenLang
 
 	class PushBackStream;
 
-	std::ostream &operator<<(std::ostream &os, ReservedToken t);
-
 	std::optional<ReservedToken> getKeyword(std::string_view word);
 
 	std::optional<ReservedToken> getOperator(PushBackStream &stream);

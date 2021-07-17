@@ -5,10 +5,11 @@
 #include "Lookup.hpp"
 
 using namespace sharpsenLang;
-class Template : public ::testing::Test
+
+class TokenizerTest : public ::testing::Test
 {
 protected:
-    Template() {}
+    TokenizerTest() {}
 
     void SetUp() override
     {
@@ -16,12 +17,12 @@ protected:
 
     void TearDown() override {}
 
-    ~Template() {}
+    ~TokenizerTest() {}
 
     static void TearDownTestSuite() {}
 };
 
-TEST_F(Template, ExampleTest)
+TEST_F(TokenizerTest, ExampleTest)
 {
    EXPECT_TRUE(true);
 }
