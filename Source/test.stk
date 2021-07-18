@@ -34,17 +34,17 @@ function number less(number x, number y) {
 public function void main() {
 	number[] arr;
 	
-	for (number i = 0; i < 10; ++i) {
+	for (number i = 0; i < 100; ++i) {
 		arr[sizeof(arr)] = rnd(100);
 	}
 	
-	trace(tostring(arr));
+	trace(toString(arr));
 	
 	sort(&arr, less);
 	
-	trace(tostring(arr));
+	trace(toString(arr));
 	
 	sort(&arr, greater);
 	
-	trace(tostring(arr));
+	trace(toString(arr));
 }

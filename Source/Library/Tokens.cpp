@@ -75,7 +75,7 @@ namespace sharpsenLang
 
 		const Lookup<std::string_view, ReservedToken> keywordTokenMap{
 			{"sizeof", ReservedToken::KwSizeof},
-			{"ToString", ReservedToken::KwToString},
+			{"toString", ReservedToken::KwToString},
 
 			{"if", ReservedToken::KwIf},
 			{"else", ReservedToken::KwElse},
