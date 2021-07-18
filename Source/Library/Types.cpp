@@ -97,22 +97,23 @@ namespace sharpsenLang
 	TypeHandle TypeRegistry::getHandle(const Type &t)
 	{
 		return std::visit(
-			overloaded{[](SimpleType t)
-					   {
-						   switch (t)
-						   {
-						   case SimpleType::nothing:
-							   return TypeRegistry::getVoidHandle();
-						   case SimpleType::number:
-							   return TypeRegistry::getNumberHandle();
-						   case SimpleType::string:
-							   return TypeRegistry::getStringHandle();
-						   }
-					   },
-					   [this](const auto &t)
-					   {
-						   return &(*(_types.insert(t).first));
-					   }},
+			overloaded{
+				[](SimpleType t)
+				{
+					switch (t)
+					{
+					case SimpleType::nothing:
+						return TypeRegistry::getVoidHandle();
+					case SimpleType::number:
+						return TypeRegistry::getNumberHandle();
+					case SimpleType::string:
+						return TypeRegistry::getStringHandle();
+					}
+				},
+				[this](const auto &t)
+				{
+					return &(*(_types.insert(t).first));
+				}},
 			t);
 	}
 
@@ -127,60 +128,61 @@ namespace std
 	std::string to_string(TypeHandle t)
 	{
 		return std::visit(
-			overloaded{[](SimpleType st)
-					   {
-						   switch (st)
-						   {
-						   case SimpleType::nothing:
-							   return std::string("void");
-						   case SimpleType::number:
-							   return std::string("number");
-						   case SimpleType::string:
-							   return std::string("string");
-						   }
-					   },
-					   [](const ArrayType &at)
-					   {
-						   std::string ret = to_string(at.innerTypeId);
-						   ret += "[]";
-						   return ret;
-					   },
-					   [](const FunctionType &ft)
-					   {
-						   std::string ret = to_string(ft.returnTypeId) + "(";
-						   const char *separator = "";
-						   for (const FunctionType::Param &p : ft.paramTypeId)
-						   {
-							   ret += separator + to_string(p.typeId) + (p.byRef ? "&" : "");
-							   separator = ",";
-						   }
-						   ret += ")";
-						   return ret;
-					   },
-					   [](const TupleType &tt)
-					   {
-						   std::string ret = "[";
-						   const char *separator = "";
-						   for (TypeHandle it : tt.innerTypeId)
-						   {
-							   ret += separator + to_string(it);
-							   separator = ",";
-						   }
-						   ret += "]";
-						   return ret;
-					   },
-					   [](const InitListType &ilt)
-					   {
-						   std::string ret = "{";
-						   const char *separator = "";
-						   for (TypeHandle it : ilt.innerTypeId)
-						   {
-							   ret += separator + to_string(it);
-							   separator = ",";
-						   }
-						   ret += "}";
-						   return ret;
-					   }},
+			overloaded{
+				[](SimpleType st)
+				{
+					switch (st)
+					{
+					case SimpleType::nothing:
+						return std::string("void");
+					case SimpleType::number:
+						return std::string("number");
+					case SimpleType::string:
+						return std::string("string");
+					}
+				},
+				[](const ArrayType &at)
+				{
+					std::string ret = to_string(at.innerTypeId);
+					ret += "[]";
+					return ret;
+				},
+				[](const FunctionType &ft)
+				{
+					std::string ret = to_string(ft.returnTypeId) + "(";
+					const char *separator = "";
+					for (const FunctionType::Param &p : ft.paramTypeId)
+					{
+						ret += separator + to_string(p.typeId) + (p.byRef ? "&" : "");
+						separator = ",";
+					}
+					ret += ")";
+					return ret;
+				},
+				[](const TupleType &tt)
+				{
+					std::string ret = "[";
+					const char *separator = "";
+					for (TypeHandle it : tt.innerTypeId)
+					{
+						ret += separator + to_string(it);
+						separator = ",";
+					}
+					ret += "]";
+					return ret;
+				},
+				[](const InitListType &ilt)
+				{
+					std::string ret = "{";
+					const char *separator = "";
+					for (TypeHandle it : ilt.innerTypeId)
+					{
+						ret += separator + to_string(it);
+						separator = ",";
+					}
+					ret += "}";
+					return ret;
+				}},
 			*t);
 	}
 }

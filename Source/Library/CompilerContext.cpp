@@ -60,8 +60,9 @@ namespace sharpsenLang
 		return insertIdentifier(std::move(name), typeId, identifiersSize(), IdentifierScope::global_variable);
 	}
 
-	LocalVariableLookup::LocalVariableLookup(std::unique_ptr<LocalVariableLookup> parent_lookup) : _parent(std::move(parent_lookup)),
-																								   _nextIdentifierIndex(_parent ? _parent->_nextIdentifierIndex : 1)
+	LocalVariableLookup::LocalVariableLookup(std::unique_ptr<LocalVariableLookup> parent_lookup)
+		: _parent(std::move(parent_lookup)),
+		  _nextIdentifierIndex(_parent ? _parent->_nextIdentifierIndex : 1)
 	{
 	}
 

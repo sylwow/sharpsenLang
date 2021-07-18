@@ -1,8 +1,8 @@
 #pragma once
 
-#include <unordered_map>
 #include <memory>
 #include <string>
+#include <unordered_map>
 
 #include "Types.hpp"
 
@@ -39,13 +39,15 @@ namespace sharpsenLang
 		std::unordered_map<std::string, IdentifierInfo> _identifiers;
 
 	protected:
-		const IdentifierInfo *insertIdentifier(std::string name, TypeHandle typeId, size_t index, IdentifierScope scope);
+		const IdentifierInfo *insertIdentifier(std::string name, TypeHandle typeId,
+											   size_t index, IdentifierScope scope);
 		size_t identifiersSize() const;
 
 	public:
 		virtual const IdentifierInfo *find(const std::string &name) const;
 
-		virtual const IdentifierInfo *createIdentifier(std::string name, TypeHandle typeId) = 0;
+		virtual const IdentifierInfo *createIdentifier(std::string name,
+													   TypeHandle typeId) = 0;
 
 		bool canDeclare(const std::string &name) const;
 
@@ -55,7 +57,8 @@ namespace sharpsenLang
 	class GlobalVariableLookup : public IdentifierLookup
 	{
 	public:
-		const IdentifierInfo *createIdentifier(std::string name, TypeHandle typeId) override;
+		const IdentifierInfo *createIdentifier(std::string name,
+											   TypeHandle typeId) override;
 	};
 
 	class LocalVariableLookup : public IdentifierLookup
@@ -69,7 +72,8 @@ namespace sharpsenLang
 
 		const IdentifierInfo *find(const std::string &name) const override;
 
-		const IdentifierInfo *createIdentifier(std::string name, TypeHandle typeId) override;
+		const IdentifierInfo *createIdentifier(std::string name,
+											   TypeHandle typeId) override;
 
 		std::unique_ptr<LocalVariableLookup> detachParent();
 	};
@@ -88,7 +92,8 @@ namespace sharpsenLang
 	class FunctionLookup : public IdentifierLookup
 	{
 	public:
-		const IdentifierInfo *createIdentifier(std::string name, TypeHandle typeId) override;
+		const IdentifierInfo *createIdentifier(std::string name,
+											   TypeHandle typeId) override;
 	};
 
 	class CompilerContext
