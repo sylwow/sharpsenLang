@@ -9,9 +9,9 @@ namespace sharpsenLang
 {
 	enum struct SimpleType
 	{
-		nothing,
-		number,
-		string,
+		Void,
+		Number,
+		String,
 	};
 
 	struct ArrayType;

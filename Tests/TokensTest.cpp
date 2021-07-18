@@ -40,32 +40,32 @@ protected:
       EXPECT_EQ(ReservedToken::##token, *keyword); \
    }
 
-TEST_KEYWORD("sizeof", kw_sizeof)
-TEST_KEYWORD("tostring", kw_tostring)
+TEST_KEYWORD("sizeof", KwSizeof)
+TEST_KEYWORD("ToString", KwToString)
 
-TEST_KEYWORD("if", kw_if)
-TEST_KEYWORD("else", kw_else)
-TEST_KEYWORD("elif", kw_elif)
+TEST_KEYWORD("if", KwIf)
+TEST_KEYWORD("else", KwElse)
+TEST_KEYWORD("elif", KwElif)
 
-TEST_KEYWORD("switch", kw_switch)
-TEST_KEYWORD("case", kw_case)
-TEST_KEYWORD("default", kw_default)
+TEST_KEYWORD("switch", KwSwitch)
+TEST_KEYWORD("case", KwCase)
+TEST_KEYWORD("default", KwDefault)
 
-TEST_KEYWORD("for", kw_for)
-TEST_KEYWORD("while", kw_while)
-TEST_KEYWORD("do", kw_do)
+TEST_KEYWORD("for", KwFor)
+TEST_KEYWORD("while", KwWhile)
+TEST_KEYWORD("do", KwDo)
 
-TEST_KEYWORD("break", kw_break)
-TEST_KEYWORD("continue", kw_continue)
-TEST_KEYWORD("return", kw_return)
+TEST_KEYWORD("break", KwBreak)
+TEST_KEYWORD("continue", KwContinue)
+TEST_KEYWORD("return", KwReturn)
 
-TEST_KEYWORD("function", kw_function)
+TEST_KEYWORD("function", KwFunction)
 
-TEST_KEYWORD("void", kw_void)
-TEST_KEYWORD("number", kw_number)
-TEST_KEYWORD("string", kw_string)
+TEST_KEYWORD("void", KwVoid)
+TEST_KEYWORD("number", KwNumber)
+TEST_KEYWORD("string", KwString)
 
-TEST_KEYWORD("public", kw_public)
+TEST_KEYWORD("public", KwPublic)
 
 TEST_F(TokensTest, GetKeywordFail)
 {
@@ -86,66 +86,66 @@ TEST_F(TokensTest, GetKeywordFail)
       EXPECT_EQ(ReservedToken::##token, *keyword); \
    }
 
-TEST_OPERATOR("++", inc)
-TEST_OPERATOR("--", dec)
+TEST_OPERATOR("++", Inc)
+TEST_OPERATOR("--", Dec)
 
-TEST_OPERATOR("+", add)
-TEST_OPERATOR("-", sub)
-TEST_OPERATOR("..", concat)
-TEST_OPERATOR("*", mul)
-TEST_OPERATOR("/", div)
-TEST_OPERATOR("\\", idiv)
-TEST_OPERATOR("%", mod)
+TEST_OPERATOR("+", Add)
+TEST_OPERATOR("-", Sub)
+TEST_OPERATOR("..", Concat)
+TEST_OPERATOR("*", Mul)
+TEST_OPERATOR("/", Div)
+TEST_OPERATOR("\\", Idiv)
+TEST_OPERATOR("%", Mod)
 
-TEST_OPERATOR("~", bitwise_not)
-TEST_OPERATOR("&", bitwise_and)
-TEST_OPERATOR("|", bitwise_or)
-TEST_OPERATOR("^", bitwise_xor)
-TEST_OPERATOR("<<", shiftl)
-TEST_OPERATOR(">>", shiftr)
+TEST_OPERATOR("~", BitwiseNot)
+TEST_OPERATOR("&", BitwiseAnd)
+TEST_OPERATOR("|", BitwiseOr)
+TEST_OPERATOR("^", BitwiseXor)
+TEST_OPERATOR("<<", Shiftl)
+TEST_OPERATOR(">>", Shiftr)
 
-TEST_OPERATOR("=", assign)
+TEST_OPERATOR("=", Assign)
 
-TEST_OPERATOR("+=", add_assign)
-TEST_OPERATOR("-=", sub_assign)
-TEST_OPERATOR("..=", concat_assign)
-TEST_OPERATOR("*=", mul_assign)
-TEST_OPERATOR("/=", div_assign)
-TEST_OPERATOR("\\=", idiv_assign)
-TEST_OPERATOR("%=", mod_assign)
+TEST_OPERATOR("+=", AddAssign)
+TEST_OPERATOR("-=", SubAssign)
+TEST_OPERATOR("..=", ConcatAssign)
+TEST_OPERATOR("*=", MulAssign)
+TEST_OPERATOR("/=", DivAssign)
+TEST_OPERATOR("\\=", IdivAssign)
+TEST_OPERATOR("%=", ModAssign)
 
-TEST_OPERATOR("&=", and_assign)
-TEST_OPERATOR("|=", or_assign)
-TEST_OPERATOR("^=", xor_assign)
-TEST_OPERATOR("<<=", shiftl_assign)
-TEST_OPERATOR(">>=", shiftr_assign)
+TEST_OPERATOR("&=", AndAssign)
+TEST_OPERATOR("|=", OrAssign)
+TEST_OPERATOR("^=", XorAssign)
+TEST_OPERATOR("<<=", ShiftlAssign)
+TEST_OPERATOR(">>=", ShiftrAssign)
 
-TEST_OPERATOR("!", logical_not)
-TEST_OPERATOR("&&", logical_and)
-TEST_OPERATOR("||", logical_or)
+TEST_OPERATOR("!", LogicalNot)
+TEST_OPERATOR("&&", LogicalAnd)
+TEST_OPERATOR("||", LogicalOr)
 
-TEST_OPERATOR("==", eq)
-TEST_OPERATOR("!=", ne)
-TEST_OPERATOR("<", lt)
-TEST_OPERATOR(">", gt)
-TEST_OPERATOR("<=", le)
-TEST_OPERATOR(">=", ge)
+TEST_OPERATOR("==", Eq)
+TEST_OPERATOR("!=", Ne)
+TEST_OPERATOR("<", Lt)
+TEST_OPERATOR(">", Gt)
+TEST_OPERATOR("<=", Le)
+TEST_OPERATOR(">=", Ge)
 
-TEST_OPERATOR("?", question)
-TEST_OPERATOR(":", colon)
+TEST_OPERATOR("?", Question)
+TEST_OPERATOR(":", Colon)
 
-TEST_OPERATOR(",", comma)
+TEST_OPERATOR(",", Comma)
 
-TEST_OPERATOR(";", semicolon)
+TEST_OPERATOR(";", Semicolon)
 
-TEST_OPERATOR("(", open_round)
-TEST_OPERATOR(")", close_round)
+TEST_OPERATOR("(", OpenRound)
+TEST_OPERATOR(")", CloseRound)
 
-TEST_OPERATOR("{", open_curly)
-TEST_OPERATOR("}", close_curly)
+TEST_OPERATOR("{", OpenCurly)
+TEST_OPERATOR("}", CloseCurly)
 
-TEST_OPERATOR("[", open_square)
-TEST_OPERATOR("]", close_square)
+TEST_OPERATOR("[", OpenSquare)
+TEST_OPERATOR("]", CloseSquare)
 
 TEST_F(TokensTest, GetOperatorFail)
 {
@@ -159,9 +159,9 @@ TEST_F(TokensTest, GetOperatorFail)
 
 TEST_F(TokensTest, TokenContruct)
 {
-   Token t(ReservedToken::add, 0, 0);
+   Token t(ReservedToken::Add, 0, 0);
 
    EXPECT_FALSE(t.isNumber());
    EXPECT_TRUE(t.isReservedToken());
-   EXPECT_EQ(ReservedToken::add, t.getReservedToken());
+   EXPECT_EQ(ReservedToken::Add, t.getReservedToken());
 }

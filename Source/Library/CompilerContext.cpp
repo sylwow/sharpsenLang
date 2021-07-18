@@ -57,7 +57,7 @@ namespace sharpsenLang
 
 	const IdentifierInfo *GlobalVariableLookup::createIdentifier(std::string name, TypeHandle typeId)
 	{
-		return insertIdentifier(std::move(name), typeId, identifiersSize(), IdentifierScope::global_variable);
+		return insertIdentifier(std::move(name), typeId, identifiersSize(), IdentifierScope::GlobalVariable);
 	}
 
 	LocalVariableLookup::LocalVariableLookup(std::unique_ptr<LocalVariableLookup> parent_lookup)
@@ -80,7 +80,7 @@ namespace sharpsenLang
 
 	const IdentifierInfo *LocalVariableLookup::createIdentifier(std::string name, TypeHandle typeId)
 	{
-		return insertIdentifier(std::move(name), typeId, _nextIdentifierIndex++, IdentifierScope::local_variable);
+		return insertIdentifier(std::move(name), typeId, _nextIdentifierIndex++, IdentifierScope::LocalVariable);
 	}
 
 	std::unique_ptr<LocalVariableLookup> LocalVariableLookup::detachParent()
@@ -96,12 +96,12 @@ namespace sharpsenLang
 
 	const IdentifierInfo *ParamLookup::createParam(std::string name, TypeHandle typeId)
 	{
-		return insertIdentifier(std::move(name), typeId, _nextParamIndex--, IdentifierScope::local_variable);
+		return insertIdentifier(std::move(name), typeId, _nextParamIndex--, IdentifierScope::LocalVariable);
 	}
 
 	const IdentifierInfo *FunctionLookup::createIdentifier(std::string name, TypeHandle typeId)
 	{
-		return insertIdentifier(std::move(name), typeId, identifiersSize(), IdentifierScope::function);
+		return insertIdentifier(std::move(name), typeId, identifiersSize(), IdentifierScope::Function);
 	}
 
 	CompilerContext::CompilerContext()

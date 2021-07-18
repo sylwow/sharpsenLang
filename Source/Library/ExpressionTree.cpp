@@ -94,7 +94,7 @@ namespace sharpsenLang
 					if (const IdentifierInfo *info = context.find(value.name))
 					{
 						_typeId = info->typeId();
-						_lvalue = (info->getScope() != IdentifierScope::function);
+						_lvalue = (info->getScope() != IdentifierScope::Function);
 					}
 					else
 					{
@@ -105,62 +105,62 @@ namespace sharpsenLang
 				{
 					switch (value)
 					{
-					case NodeOperation::param:
+					case NodeOperation::Param:
 						_typeId = _children[0]->_typeId;
 						_lvalue = false;
 						break;
-					case NodeOperation::preinc:
-					case NodeOperation::predec:
+					case NodeOperation::Preinc:
+					case NodeOperation::Predec:
 						_typeId = number_handle;
 						_lvalue = true;
 						_children[0]->checkConversion(number_handle, true);
 						break;
-					case NodeOperation::postinc:
-					case NodeOperation::postdec:
+					case NodeOperation::Postinc:
+					case NodeOperation::Postdec:
 						_typeId = number_handle;
 						_lvalue = false;
 						_children[0]->checkConversion(number_handle, true);
 						break;
-					case NodeOperation::positive:
-					case NodeOperation::negative:
-					case NodeOperation::bnot:
-					case NodeOperation::lnot:
+					case NodeOperation::Positive:
+					case NodeOperation::Negative:
+					case NodeOperation::Bnot:
+					case NodeOperation::Lnot:
 						_typeId = number_handle;
 						_lvalue = false;
 						_children[0]->checkConversion(number_handle, false);
 						break;
-					case NodeOperation::size:
+					case NodeOperation::Size:
 						_typeId = number_handle;
 						_lvalue = false;
 						break;
-					case NodeOperation::tostring:
+					case NodeOperation::ToString:
 						_typeId = string_handle;
 						_lvalue = false;
 						break;
-					case NodeOperation::add:
-					case NodeOperation::sub:
-					case NodeOperation::mul:
-					case NodeOperation::div:
-					case NodeOperation::idiv:
-					case NodeOperation::mod:
-					case NodeOperation::band:
-					case NodeOperation::bor:
-					case NodeOperation::bxor:
-					case NodeOperation::bsl:
-					case NodeOperation::bsr:
-					case NodeOperation::land:
-					case NodeOperation::lor:
+					case NodeOperation::Add:
+					case NodeOperation::Sub:
+					case NodeOperation::Mul:
+					case NodeOperation::Div:
+					case NodeOperation::Idiv:
+					case NodeOperation::Mod:
+					case NodeOperation::Band:
+					case NodeOperation::Bor:
+					case NodeOperation::Bxor:
+					case NodeOperation::Bsl:
+					case NodeOperation::Bsr:
+					case NodeOperation::Land:
+					case NodeOperation::Lor:
 						_typeId = number_handle;
 						_lvalue = false;
 						_children[0]->checkConversion(number_handle, false);
 						_children[1]->checkConversion(number_handle, false);
 						break;
-					case NodeOperation::eq:
-					case NodeOperation::ne:
-					case NodeOperation::lt:
-					case NodeOperation::gt:
-					case NodeOperation::le:
-					case NodeOperation::ge:
+					case NodeOperation::Eq:
+					case NodeOperation::Ne:
+					case NodeOperation::Lt:
+					case NodeOperation::Gt:
+					case NodeOperation::Le:
+					case NodeOperation::Ge:
 						_typeId = number_handle;
 						_lvalue = false;
 						if (!_children[0]->isNumber() || !_children[1]->isNumber())
@@ -174,41 +174,41 @@ namespace sharpsenLang
 							_children[1]->checkConversion(number_handle, false);
 						}
 						break;
-					case NodeOperation::concat:
-						_typeId = context.getHandle(SimpleType::string);
+					case NodeOperation::Concat:
+						_typeId = context.getHandle(SimpleType::String);
 						_lvalue = false;
 						_children[0]->checkConversion(string_handle, false);
 						_children[1]->checkConversion(string_handle, false);
 						break;
-					case NodeOperation::assign:
+					case NodeOperation::Assign:
 						_typeId = _children[0]->getTypeId();
 						_lvalue = true;
 						_children[0]->checkConversion(_typeId, true);
 						_children[1]->checkConversion(_typeId, false);
 						break;
-					case NodeOperation::add_assign:
-					case NodeOperation::sub_assign:
-					case NodeOperation::mul_assign:
-					case NodeOperation::div_assign:
-					case NodeOperation::idiv_assign:
-					case NodeOperation::mod_assign:
-					case NodeOperation::band_assign:
-					case NodeOperation::bor_assign:
-					case NodeOperation::bxor_assign:
-					case NodeOperation::bsl_assign:
-					case NodeOperation::bsr_assign:
+					case NodeOperation::AddAssign:
+					case NodeOperation::SubAssign:
+					case NodeOperation::MulAssign:
+					case NodeOperation::DivAssign:
+					case NodeOperation::IdivAssign:
+					case NodeOperation::ModAssign:
+					case NodeOperation::BandAssign:
+					case NodeOperation::BorAssign:
+					case NodeOperation::BxorAssign:
+					case NodeOperation::BslAssign:
+					case NodeOperation::BsrAssign:
 						_typeId = number_handle;
 						_lvalue = true;
 						_children[0]->checkConversion(number_handle, true);
 						_children[1]->checkConversion(number_handle, false);
 						break;
-					case NodeOperation::concat_assign:
+					case NodeOperation::ConcatAssign:
 						_typeId = string_handle;
 						_lvalue = true;
 						_children[0]->checkConversion(string_handle, true);
 						_children[1]->checkConversion(string_handle, false);
 						break;
-					case NodeOperation::comma:
+					case NodeOperation::Comma:
 						for (int i = 0; i < int(_children.size()) - 1; ++i)
 						{
 							_children[i]->checkConversion(void_handle, false);
@@ -216,7 +216,7 @@ namespace sharpsenLang
 						_typeId = _children.back()->getTypeId();
 						_lvalue = _children.back()->isLvalue();
 						break;
-					case NodeOperation::index:
+					case NodeOperation::Index:
 						_lvalue = _children[0]->isLvalue();
 						if (const ArrayType *at = std::get_if<ArrayType>(_children[0]->getTypeId()))
 						{
@@ -247,7 +247,7 @@ namespace sharpsenLang
 												_lineNumber, _charIndex);
 						}
 						break;
-					case NodeOperation::ternary:
+					case NodeOperation::Ternary:
 						_children[0]->checkConversion(number_handle, false);
 						if (isConvertible(
 								_children[2]->getTypeId(), _children[2]->isLvalue(),
@@ -264,7 +264,7 @@ namespace sharpsenLang
 							_lvalue = _children[2]->isLvalue();
 						}
 						break;
-					case NodeOperation::call:
+					case NodeOperation::Call:
 						if (const FunctionType *ft = std::get_if<FunctionType>(_children[0]->getTypeId()))
 						{
 							_typeId = ft->returnTypeId;
@@ -294,7 +294,7 @@ namespace sharpsenLang
 												_lineNumber, _charIndex);
 						}
 						break;
-					case NodeOperation::init:
+					case NodeOperation::Init:
 					{
 						InitListType ilt;
 						ilt.innerTypeId.reserve(_children.size());

@@ -102,11 +102,11 @@ namespace sharpsenLang
 				{
 					switch (t)
 					{
-					case SimpleType::nothing:
+					case SimpleType::Void:
 						return TypeRegistry::getVoidHandle();
-					case SimpleType::number:
+					case SimpleType::Number:
 						return TypeRegistry::getNumberHandle();
-					case SimpleType::string:
+					case SimpleType::String:
 						return TypeRegistry::getStringHandle();
 					}
 				},
@@ -117,9 +117,9 @@ namespace sharpsenLang
 			t);
 	}
 
-	Type TypeRegistry::voidType = SimpleType::nothing;
-	Type TypeRegistry::numberType = SimpleType::number;
-	Type TypeRegistry::stringType = SimpleType::string;
+	Type TypeRegistry::voidType = SimpleType::Void;
+	Type TypeRegistry::numberType = SimpleType::Number;
+	Type TypeRegistry::stringType = SimpleType::String;
 }
 
 namespace std
@@ -133,11 +133,11 @@ namespace std
 				{
 					switch (st)
 					{
-					case SimpleType::nothing:
+					case SimpleType::Void:
 						return std::string("void");
-					case SimpleType::number:
+					case SimpleType::Number:
 						return std::string("number");
-					case SimpleType::string:
+					case SimpleType::String:
 						return std::string("string");
 					}
 				},

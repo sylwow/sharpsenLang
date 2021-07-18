@@ -11,95 +11,95 @@ namespace sharpsenLang
 	namespace
 	{
 		const Lookup<std::string_view, ReservedToken> operatorTokenMap{
-			{"++", ReservedToken::inc},
-			{"--", ReservedToken::dec},
+			{"++", ReservedToken::Inc},
+			{"--", ReservedToken::Dec},
 
-			{"+", ReservedToken::add},
-			{"-", ReservedToken::sub},
-			{"..", ReservedToken::concat},
-			{"*", ReservedToken::mul},
-			{"/", ReservedToken::div},
-			{"\\", ReservedToken::idiv},
-			{"%", ReservedToken::mod},
+			{"+", ReservedToken::Add},
+			{"-", ReservedToken::Sub},
+			{"..", ReservedToken::Concat},
+			{"*", ReservedToken::Mul},
+			{"/", ReservedToken::Div},
+			{"\\", ReservedToken::Idiv},
+			{"%", ReservedToken::Mod},
 
-			{"~", ReservedToken::bitwise_not},
-			{"&", ReservedToken::bitwise_and},
-			{"|", ReservedToken::bitwise_or},
-			{"^", ReservedToken::bitwise_xor},
-			{"<<", ReservedToken::shiftl},
-			{">>", ReservedToken::shiftr},
+			{"~", ReservedToken::BitwiseNot},
+			{"&", ReservedToken::BitwiseAnd},
+			{"|", ReservedToken::BitwiseOr},
+			{"^", ReservedToken::BitwiseXor},
+			{"<<", ReservedToken::Shiftl},
+			{">>", ReservedToken::Shiftr},
 
-			{"=", ReservedToken::assign},
+			{"=", ReservedToken::Assign},
 
-			{"+=", ReservedToken::add_assign},
-			{"-=", ReservedToken::sub_assign},
-			{"..=", ReservedToken::concat_assign},
-			{"*=", ReservedToken::mul_assign},
-			{"/=", ReservedToken::div_assign},
-			{"\\=", ReservedToken::idiv_assign},
-			{"%=", ReservedToken::mod_assign},
+			{"+=", ReservedToken::AddAssign},
+			{"-=", ReservedToken::SubAssign},
+			{"..=", ReservedToken::ConcatAssign},
+			{"*=", ReservedToken::MulAssign},
+			{"/=", ReservedToken::DivAssign},
+			{"\\=", ReservedToken::IdivAssign},
+			{"%=", ReservedToken::ModAssign},
 
-			{"&=", ReservedToken::and_assign},
-			{"|=", ReservedToken::or_assign},
-			{"^=", ReservedToken::xor_assign},
-			{"<<=", ReservedToken::shiftl_assign},
-			{">>=", ReservedToken::shiftr_assign},
+			{"&=", ReservedToken::AndAssign},
+			{"|=", ReservedToken::OrAssign},
+			{"^=", ReservedToken::XorAssign},
+			{"<<=", ReservedToken::ShiftlAssign},
+			{">>=", ReservedToken::ShiftrAssign},
 
-			{"!", ReservedToken::logical_not},
-			{"&&", ReservedToken::logical_and},
-			{"||", ReservedToken::logical_or},
+			{"!", ReservedToken::LogicalNot},
+			{"&&", ReservedToken::LogicalAnd},
+			{"||", ReservedToken::LogicalOr},
 
-			{"==", ReservedToken::eq},
-			{"!=", ReservedToken::ne},
-			{"<", ReservedToken::lt},
-			{">", ReservedToken::gt},
-			{"<=", ReservedToken::le},
-			{">=", ReservedToken::ge},
+			{"==", ReservedToken::Eq},
+			{"!=", ReservedToken::Ne},
+			{"<", ReservedToken::Lt},
+			{">", ReservedToken::Gt},
+			{"<=", ReservedToken::Le},
+			{">=", ReservedToken::Ge},
 
-			{"?", ReservedToken::question},
-			{":", ReservedToken::colon},
+			{"?", ReservedToken::Question},
+			{":", ReservedToken::Colon},
 
-			{",", ReservedToken::comma},
+			{",", ReservedToken::Comma},
 
-			{";", ReservedToken::semicolon},
+			{";", ReservedToken::Semicolon},
 
-			{"(", ReservedToken::open_round},
-			{")", ReservedToken::close_round},
+			{"(", ReservedToken::OpenRound},
+			{")", ReservedToken::CloseRound},
 
-			{"{", ReservedToken::open_curly},
-			{"}", ReservedToken::close_curly},
+			{"{", ReservedToken::OpenCurly},
+			{"}", ReservedToken::CloseCurly},
 
-			{"[", ReservedToken::open_square},
-			{"]", ReservedToken::close_square},
+			{"[", ReservedToken::OpenSquare},
+			{"]", ReservedToken::CloseSquare},
 		};
 
 		const Lookup<std::string_view, ReservedToken> keywordTokenMap{
-			{"sizeof", ReservedToken::kw_sizeof},
-			{"tostring", ReservedToken::kw_tostring},
+			{"sizeof", ReservedToken::KwSizeof},
+			{"ToString", ReservedToken::KwToString},
 
-			{"if", ReservedToken::kw_if},
-			{"else", ReservedToken::kw_else},
-			{"elif", ReservedToken::kw_elif},
+			{"if", ReservedToken::KwIf},
+			{"else", ReservedToken::KwElse},
+			{"elif", ReservedToken::KwElif},
 
-			{"switch", ReservedToken::kw_switch},
-			{"case", ReservedToken::kw_case},
-			{"default", ReservedToken::kw_default},
+			{"switch", ReservedToken::KwSwitch},
+			{"case", ReservedToken::KwCase},
+			{"default", ReservedToken::KwDefault},
 
-			{"for", ReservedToken::kw_for},
-			{"while", ReservedToken::kw_while},
-			{"do", ReservedToken::kw_do},
+			{"for", ReservedToken::KwFor},
+			{"while", ReservedToken::KwWhile},
+			{"do", ReservedToken::KwDo},
 
-			{"break", ReservedToken::kw_break},
-			{"continue", ReservedToken::kw_continue},
-			{"return", ReservedToken::kw_return},
+			{"break", ReservedToken::KwBreak},
+			{"continue", ReservedToken::KwContinue},
+			{"return", ReservedToken::KwReturn},
 
-			{"function", ReservedToken::kw_function},
+			{"function", ReservedToken::KwFunction},
 
-			{"void", ReservedToken::kw_void},
-			{"number", ReservedToken::kw_number},
-			{"string", ReservedToken::kw_string},
+			{"void", ReservedToken::KwVoid},
+			{"number", ReservedToken::KwNumber},
+			{"string", ReservedToken::KwString},
 
-			{"public", ReservedToken::kw_public}};
+			{"public", ReservedToken::KwPublic}};
 
 		const Lookup<ReservedToken, std::string_view> tokenStringMap =
 			([]()

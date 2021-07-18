@@ -72,11 +72,11 @@ TEST_F(TokenizerTest, NumberLine)
     auto result = getResult(input);
 
     std::vector<Token> expected{
-        {ReservedToken::kw_number},
+        {ReservedToken::KwNumber},
         {Identifier{"g"}},
-        {ReservedToken::assign},
+        {ReservedToken::Assign},
         {13.0},
-        {ReservedToken::semicolon},
+        {ReservedToken::Semicolon},
     };
     EXPECT_EQ(expected, result);
 }
@@ -88,11 +88,11 @@ TEST_F(TokenizerTest, StringLine)
     auto result = getResult(input);
 
     std::vector<Token> expected{
-        {ReservedToken::kw_string},
+        {ReservedToken::KwString},
         {Identifier{"g"}},
-        {ReservedToken::assign},
+        {ReservedToken::Assign},
         {"hello my friend"},
-        {ReservedToken::semicolon},
+        {ReservedToken::Semicolon},
     };
     EXPECT_EQ(expected, result);
 }
@@ -108,19 +108,19 @@ TEST_F(TokenizerTest, MultilineVar)
     auto result = getResult(input);
 
     std::vector<Token> expected{
-        {ReservedToken::kw_number},
+        {ReservedToken::KwNumber},
         {Identifier{"tmp"}},
-        {ReservedToken::assign},
+        {ReservedToken::Assign},
         {Identifier{"x"}},
-        {ReservedToken::semicolon},
+        {ReservedToken::Semicolon},
         {Identifier{"x"}},
-        {ReservedToken::assign},
+        {ReservedToken::Assign},
         {Identifier{"y"}},
-        {ReservedToken::semicolon},
+        {ReservedToken::Semicolon},
         {Identifier{"y"}},
-        {ReservedToken::assign},
+        {ReservedToken::Assign},
         {Identifier{"tmp"}},
-        {ReservedToken::semicolon},
+        {ReservedToken::Semicolon},
     };
     EXPECT_EQ(expected, result);
 }
@@ -136,23 +136,23 @@ TEST_F(TokenizerTest, SimpleFunction)
     auto result = getResult(input);
 
     std::vector<Token> expected{
-        {ReservedToken::kw_function},
-        {ReservedToken::kw_number},
+        {ReservedToken::KwFunction},
+        {ReservedToken::KwNumber},
         {Identifier{"less"}},
-        {ReservedToken::open_round},
-        {ReservedToken::kw_number},
+        {ReservedToken::OpenRound},
+        {ReservedToken::KwNumber},
         {Identifier{"x"}},
-        {ReservedToken::comma},
-        {ReservedToken::kw_number},
+        {ReservedToken::Comma},
+        {ReservedToken::KwNumber},
         {Identifier{"y"}},
-        {ReservedToken::close_round},
-        {ReservedToken::open_curly},
-        {ReservedToken::kw_return},
+        {ReservedToken::CloseRound},
+        {ReservedToken::OpenCurly},
+        {ReservedToken::KwReturn},
         {Identifier{"x"}},
-        {ReservedToken::lt},
+        {ReservedToken::Lt},
         {Identifier{"y"}},
-        {ReservedToken::semicolon},
-        {ReservedToken::close_curly},
+        {ReservedToken::Semicolon},
+        {ReservedToken::CloseCurly},
     };
     EXPECT_EQ(expected, result);
 }
@@ -168,18 +168,18 @@ TEST_F(TokenizerTest, OneLineComment)
     auto result = getResult(input);
 
     std::vector<Token> expected{
-        {ReservedToken::kw_function},
-        {ReservedToken::kw_number},
+        {ReservedToken::KwFunction},
+        {ReservedToken::KwNumber},
         {Identifier{"less"}},
-        {ReservedToken::open_round},
-        {ReservedToken::kw_number},
+        {ReservedToken::OpenRound},
+        {ReservedToken::KwNumber},
         {Identifier{"x"}},
-        {ReservedToken::comma},
-        {ReservedToken::kw_number},
+        {ReservedToken::Comma},
+        {ReservedToken::KwNumber},
         {Identifier{"y"}},
-        {ReservedToken::close_round},
-        {ReservedToken::open_curly},
-        {ReservedToken::close_curly},
+        {ReservedToken::CloseRound},
+        {ReservedToken::OpenCurly},
+        {ReservedToken::CloseCurly},
     };
     EXPECT_EQ(expected, result);
 }
@@ -202,18 +202,18 @@ TEST_F(TokenizerTest, MultilineComment)
     auto result = getResult(input);
 
     std::vector<Token> expected{
-        {ReservedToken::kw_function},
-        {ReservedToken::kw_number},
+        {ReservedToken::KwFunction},
+        {ReservedToken::KwNumber},
         {Identifier{"less"}},
-        {ReservedToken::open_round},
-        {ReservedToken::kw_number},
+        {ReservedToken::OpenRound},
+        {ReservedToken::KwNumber},
         {Identifier{"x"}},
-        {ReservedToken::comma},
-        {ReservedToken::kw_number},
+        {ReservedToken::Comma},
+        {ReservedToken::KwNumber},
         {Identifier{"y"}},
-        {ReservedToken::close_round},
-        {ReservedToken::open_curly},
-        {ReservedToken::close_curly},
+        {ReservedToken::CloseRound},
+        {ReservedToken::OpenCurly},
+        {ReservedToken::CloseCurly},
     };
     EXPECT_EQ(expected, result);
 }
@@ -228,27 +228,27 @@ TEST_F(TokenizerTest, MathematicalOperations)
     auto result = getResult(input);
 
     std::vector<Token> expected{
-        {ReservedToken::kw_number},
+        {ReservedToken::KwNumber},
         {Identifier{"x"}},
-        {ReservedToken::assign},
+        {ReservedToken::Assign},
         {90.0},
-        {ReservedToken::semicolon},
+        {ReservedToken::Semicolon},
         {Identifier{"x"}},
-        {ReservedToken::add_assign},
-        {ReservedToken::open_round},
-        {ReservedToken::open_round},
+        {ReservedToken::AddAssign},
+        {ReservedToken::OpenRound},
+        {ReservedToken::OpenRound},
         {12.0},
-        {ReservedToken::add},
+        {ReservedToken::Add},
         {5.0},
-        {ReservedToken::div},
+        {ReservedToken::Div},
         {13.0},
-        {ReservedToken::close_round},
-        {ReservedToken::mul},
+        {ReservedToken::CloseRound},
+        {ReservedToken::Mul},
         {8.0},
-        {ReservedToken::close_round},
-        {ReservedToken::div},
+        {ReservedToken::CloseRound},
+        {ReservedToken::Div},
         {15.0},
-        {ReservedToken::semicolon},
+        {ReservedToken::Semicolon},
     };
     EXPECT_EQ(expected, result);
 }
@@ -263,111 +263,111 @@ TEST_F(TokenizerTest, ComplexFunction)
                 arr[sizeof(arr)] = rnd(100);
             }
             
-            trace(tostring(arr));
+            trace(ToString(arr));
             
             sort(&arr, less);
             
-            trace(tostring(arr));
+            trace(ToString(arr));
             
             sort(&arr, greater);
             
-            trace(tostring(arr));
+            trace(ToString(arr));
         }
         )code";
 
     auto result = getResult(input);
 
     std::vector<Token> expected{
-        {ReservedToken::kw_public},
-        {ReservedToken::kw_function},
-        {ReservedToken::kw_void},
+        {ReservedToken::KwPublic},
+        {ReservedToken::KwFunction},
+        {ReservedToken::KwVoid},
         {Identifier{"main"}},
-        {ReservedToken::open_round},
-        {ReservedToken::close_round},
-        {ReservedToken::open_curly},
+        {ReservedToken::OpenRound},
+        {ReservedToken::CloseRound},
+        {ReservedToken::OpenCurly},
 
-        {ReservedToken::kw_number},
-        {ReservedToken::open_square},
-        {ReservedToken::close_square},
+        {ReservedToken::KwNumber},
+        {ReservedToken::OpenSquare},
+        {ReservedToken::CloseSquare},
         {Identifier{"arr"}},
-        {ReservedToken::semicolon},
+        {ReservedToken::Semicolon},
 
-        {ReservedToken::kw_for},
-        {ReservedToken::open_round},
-        {ReservedToken::kw_number},
+        {ReservedToken::KwFor},
+        {ReservedToken::OpenRound},
+        {ReservedToken::KwNumber},
         {Identifier{"i"}},
-        {ReservedToken::assign},
+        {ReservedToken::Assign},
         {0.0},
-        {ReservedToken::semicolon},
+        {ReservedToken::Semicolon},
         {Identifier{"i"}},
-        {ReservedToken::lt},
+        {ReservedToken::Lt},
         {10.0},
-        {ReservedToken::semicolon},
-        {ReservedToken::inc},
+        {ReservedToken::Semicolon},
+        {ReservedToken::Inc},
         {Identifier{"i"}},
-        {ReservedToken::close_round},
-        {ReservedToken::open_curly},
+        {ReservedToken::CloseRound},
+        {ReservedToken::OpenCurly},
         {Identifier{"arr"}},
-        {ReservedToken::open_square},
-        {ReservedToken::kw_sizeof},
-        {ReservedToken::open_round},
+        {ReservedToken::OpenSquare},
+        {ReservedToken::KwSizeof},
+        {ReservedToken::OpenRound},
         {Identifier{"arr"}},
-        {ReservedToken::close_round},
-        {ReservedToken::close_square},
-        {ReservedToken::assign},
+        {ReservedToken::CloseRound},
+        {ReservedToken::CloseSquare},
+        {ReservedToken::Assign},
         {Identifier{"rnd"}},
-        {ReservedToken::open_round},
+        {ReservedToken::OpenRound},
         {100.0},
-        {ReservedToken::close_round},
-        {ReservedToken::semicolon},
-        {ReservedToken::close_curly},
+        {ReservedToken::CloseRound},
+        {ReservedToken::Semicolon},
+        {ReservedToken::CloseCurly},
 
         {Identifier{"trace"}},
-        {ReservedToken::open_round},
-        {ReservedToken::kw_tostring},
-        {ReservedToken::open_round},
+        {ReservedToken::OpenRound},
+        {ReservedToken::KwToString},
+        {ReservedToken::OpenRound},
         {Identifier{"arr"}},
-        {ReservedToken::close_round},
-        {ReservedToken::close_round},
-        {ReservedToken::semicolon},
+        {ReservedToken::CloseRound},
+        {ReservedToken::CloseRound},
+        {ReservedToken::Semicolon},
 
         {Identifier{"sort"}},
-        {ReservedToken::open_round},
-        {ReservedToken::bitwise_and},
+        {ReservedToken::OpenRound},
+        {ReservedToken::BitwiseAnd},
         {Identifier{"arr"}},
-        {ReservedToken::comma},
+        {ReservedToken::Comma},
         {Identifier{"less"}},
-        {ReservedToken::close_round},
-        {ReservedToken::semicolon},
+        {ReservedToken::CloseRound},
+        {ReservedToken::Semicolon},
 
         {Identifier{"trace"}},
-        {ReservedToken::open_round},
-        {ReservedToken::kw_tostring},
-        {ReservedToken::open_round},
+        {ReservedToken::OpenRound},
+        {ReservedToken::KwToString},
+        {ReservedToken::OpenRound},
         {Identifier{"arr"}},
-        {ReservedToken::close_round},
-        {ReservedToken::close_round},
-        {ReservedToken::semicolon},
+        {ReservedToken::CloseRound},
+        {ReservedToken::CloseRound},
+        {ReservedToken::Semicolon},
 
         {Identifier{"sort"}},
-        {ReservedToken::open_round},
-        {ReservedToken::bitwise_and},
+        {ReservedToken::OpenRound},
+        {ReservedToken::BitwiseAnd},
         {Identifier{"arr"}},
-        {ReservedToken::comma},
+        {ReservedToken::Comma},
         {Identifier{"greater"}},
-        {ReservedToken::close_round},
-        {ReservedToken::semicolon},
+        {ReservedToken::CloseRound},
+        {ReservedToken::Semicolon},
 
         {Identifier{"trace"}},
-        {ReservedToken::open_round},
-        {ReservedToken::kw_tostring},
-        {ReservedToken::open_round},
+        {ReservedToken::OpenRound},
+        {ReservedToken::KwToString},
+        {ReservedToken::OpenRound},
         {Identifier{"arr"}},
-        {ReservedToken::close_round},
-        {ReservedToken::close_round},
-        {ReservedToken::semicolon},
+        {ReservedToken::CloseRound},
+        {ReservedToken::CloseRound},
+        {ReservedToken::Semicolon},
 
-        {ReservedToken::close_curly},
+        {ReservedToken::CloseCurly},
     };
     EXPECT_EQ(expected, result);
 }

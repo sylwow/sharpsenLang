@@ -12,27 +12,27 @@ namespace sharpsenLang
 	{
 		enum struct OperatorPrecedence
 		{
-			brackets,
-			postfix,
-			prefix,
-			multiplication,
-			addition,
-			shift,
-			comparison,
-			equality,
-			bitwise_and,
-			bitwise_xor,
-			bitwise_or,
-			logical_and,
-			logical_or,
-			assignment,
-			comma
+			Brackets,
+			Postfix,
+			Prefix,
+			Multiplication,
+			Addition,
+			Shift,
+			Comparison,
+			Equality,
+			BitwiseAnd,
+			BitwiseXor,
+			BitwiseOr,
+			LogicalAnd,
+			LogicalOr,
+			Assignment,
+			Comma
 		};
 
 		enum struct OperatorAssociativity
 		{
-			left_to_right,
-			right_to_left
+			LeftToRight,
+			RightToLeft
 		};
 
 		struct OperatorInfo
@@ -51,117 +51,117 @@ namespace sharpsenLang
 			{
 				switch (operation)
 				{
-				case NodeOperation::init:
-					precedence = OperatorPrecedence::brackets;
+				case NodeOperation::Init:
+					precedence = OperatorPrecedence::Brackets;
 					break;
-				case NodeOperation::param: // This will never happen. Used only for the Node creation.
-				case NodeOperation::postinc:
-				case NodeOperation::postdec:
-				case NodeOperation::index:
-				case NodeOperation::call:
-					precedence = OperatorPrecedence::postfix;
+				case NodeOperation::Param: // This will never happen. Used only for the Node creation.
+				case NodeOperation::Postinc:
+				case NodeOperation::Postdec:
+				case NodeOperation::Index:
+				case NodeOperation::Call:
+					precedence = OperatorPrecedence::Postfix;
 					break;
-				case NodeOperation::preinc:
-				case NodeOperation::predec:
-				case NodeOperation::positive:
-				case NodeOperation::negative:
-				case NodeOperation::bnot:
-				case NodeOperation::lnot:
-				case NodeOperation::size:
-				case NodeOperation::tostring:
-					precedence = OperatorPrecedence::prefix;
+				case NodeOperation::Preinc:
+				case NodeOperation::Predec:
+				case NodeOperation::Positive:
+				case NodeOperation::Negative:
+				case NodeOperation::Bnot:
+				case NodeOperation::Lnot:
+				case NodeOperation::Size:
+				case NodeOperation::ToString:
+					precedence = OperatorPrecedence::Prefix;
 					break;
-				case NodeOperation::mul:
-				case NodeOperation::div:
-				case NodeOperation::idiv:
-				case NodeOperation::mod:
-					precedence = OperatorPrecedence::multiplication;
+				case NodeOperation::Mul:
+				case NodeOperation::Div:
+				case NodeOperation::Idiv:
+				case NodeOperation::Mod:
+					precedence = OperatorPrecedence::Multiplication;
 					break;
-				case NodeOperation::add:
-				case NodeOperation::sub:
-				case NodeOperation::concat:
-					precedence = OperatorPrecedence::addition;
+				case NodeOperation::Add:
+				case NodeOperation::Sub:
+				case NodeOperation::Concat:
+					precedence = OperatorPrecedence::Addition;
 					break;
-				case NodeOperation::bsl:
-				case NodeOperation::bsr:
-					precedence = OperatorPrecedence::shift;
+				case NodeOperation::Bsl:
+				case NodeOperation::Bsr:
+					precedence = OperatorPrecedence::Shift;
 					break;
-				case NodeOperation::lt:
-				case NodeOperation::gt:
-				case NodeOperation::le:
-				case NodeOperation::ge:
-					precedence = OperatorPrecedence::comparison;
+				case NodeOperation::Lt:
+				case NodeOperation::Gt:
+				case NodeOperation::Le:
+				case NodeOperation::Ge:
+					precedence = OperatorPrecedence::Comparison;
 					break;
-				case NodeOperation::eq:
-				case NodeOperation::ne:
-					precedence = OperatorPrecedence::equality;
+				case NodeOperation::Eq:
+				case NodeOperation::Ne:
+					precedence = OperatorPrecedence::Equality;
 					break;
-				case NodeOperation::band:
-					precedence = OperatorPrecedence::bitwise_and;
+				case NodeOperation::Band:
+					precedence = OperatorPrecedence::BitwiseAnd;
 					break;
-				case NodeOperation::bxor:
-					precedence = OperatorPrecedence::bitwise_xor;
+				case NodeOperation::Bxor:
+					precedence = OperatorPrecedence::BitwiseXor;
 					break;
-				case NodeOperation::bor:
-					precedence = OperatorPrecedence::bitwise_or;
+				case NodeOperation::Bor:
+					precedence = OperatorPrecedence::BitwiseOr;
 					break;
-				case NodeOperation::land:
-					precedence = OperatorPrecedence::logical_and;
+				case NodeOperation::Land:
+					precedence = OperatorPrecedence::LogicalAnd;
 					break;
-				case NodeOperation::lor:
-					precedence = OperatorPrecedence::logical_or;
+				case NodeOperation::Lor:
+					precedence = OperatorPrecedence::LogicalOr;
 					break;
-				case NodeOperation::assign:
-				case NodeOperation::add_assign:
-				case NodeOperation::sub_assign:
-				case NodeOperation::mul_assign:
-				case NodeOperation::div_assign:
-				case NodeOperation::idiv_assign:
-				case NodeOperation::mod_assign:
-				case NodeOperation::band_assign:
-				case NodeOperation::bor_assign:
-				case NodeOperation::bxor_assign:
-				case NodeOperation::bsl_assign:
-				case NodeOperation::bsr_assign:
-				case NodeOperation::concat_assign:
-				case NodeOperation::ternary:
-					precedence = OperatorPrecedence::assignment;
+				case NodeOperation::Assign:
+				case NodeOperation::AddAssign:
+				case NodeOperation::SubAssign:
+				case NodeOperation::MulAssign:
+				case NodeOperation::DivAssign:
+				case NodeOperation::IdivAssign:
+				case NodeOperation::ModAssign:
+				case NodeOperation::BandAssign:
+				case NodeOperation::BorAssign:
+				case NodeOperation::BxorAssign:
+				case NodeOperation::BslAssign:
+				case NodeOperation::BsrAssign:
+				case NodeOperation::ConcatAssign:
+				case NodeOperation::Ternary:
+					precedence = OperatorPrecedence::Assignment;
 					break;
-				case NodeOperation::comma:
-					precedence = OperatorPrecedence::comma;
+				case NodeOperation::Comma:
+					precedence = OperatorPrecedence::Comma;
 					break;
 				}
 
 				switch (precedence)
 				{
-				case OperatorPrecedence::prefix:
-				case OperatorPrecedence::assignment:
-					associativity = OperatorAssociativity::right_to_left;
+				case OperatorPrecedence::Prefix:
+				case OperatorPrecedence::Assignment:
+					associativity = OperatorAssociativity::RightToLeft;
 					break;
 				default:
-					associativity = OperatorAssociativity::left_to_right;
+					associativity = OperatorAssociativity::LeftToRight;
 					break;
 				}
 
 				switch (operation)
 				{
-				case NodeOperation::init:
+				case NodeOperation::Init:
 					number_of_operands = 0; //zero or more
 					break;
-				case NodeOperation::postinc:
-				case NodeOperation::postdec:
-				case NodeOperation::preinc:
-				case NodeOperation::predec:
-				case NodeOperation::positive:
-				case NodeOperation::negative:
-				case NodeOperation::bnot:
-				case NodeOperation::lnot:
-				case NodeOperation::size:
-				case NodeOperation::tostring:
-				case NodeOperation::call: //at least one
+				case NodeOperation::Postinc:
+				case NodeOperation::Postdec:
+				case NodeOperation::Preinc:
+				case NodeOperation::Predec:
+				case NodeOperation::Positive:
+				case NodeOperation::Negative:
+				case NodeOperation::Bnot:
+				case NodeOperation::Lnot:
+				case NodeOperation::Size:
+				case NodeOperation::ToString:
+				case NodeOperation::Call: //at least one
 					number_of_operands = 1;
 					break;
-				case NodeOperation::ternary:
+				case NodeOperation::Ternary:
 					number_of_operands = 3;
 					break;
 				default:
@@ -175,98 +175,98 @@ namespace sharpsenLang
 		{
 			switch (token)
 			{
-			case ReservedToken::inc:
-				return prefix ? OperatorInfo(NodeOperation::preinc, lineNumber, charIndex)
-							  : OperatorInfo(NodeOperation::postinc, lineNumber, charIndex);
-			case ReservedToken::dec:
-				return prefix ? OperatorInfo(NodeOperation::predec, lineNumber, charIndex)
-							  : OperatorInfo(NodeOperation::postdec, lineNumber, charIndex);
-			case ReservedToken::add:
-				return prefix ? OperatorInfo(NodeOperation::positive, lineNumber, charIndex)
-							  : OperatorInfo(NodeOperation::add, lineNumber, charIndex);
-			case ReservedToken::sub:
-				return prefix ? OperatorInfo(NodeOperation::negative, lineNumber, charIndex)
-							  : OperatorInfo(NodeOperation::sub, lineNumber, charIndex);
-			case ReservedToken::concat:
-				return OperatorInfo(NodeOperation::concat, lineNumber, charIndex);
-			case ReservedToken::mul:
-				return OperatorInfo(NodeOperation::mul, lineNumber, charIndex);
-			case ReservedToken::div:
-				return OperatorInfo(NodeOperation::div, lineNumber, charIndex);
-			case ReservedToken::idiv:
-				return OperatorInfo(NodeOperation::idiv, lineNumber, charIndex);
-			case ReservedToken::mod:
-				return OperatorInfo(NodeOperation::mod, lineNumber, charIndex);
-			case ReservedToken::bitwise_not:
-				return OperatorInfo(NodeOperation::bnot, lineNumber, charIndex);
-			case ReservedToken::bitwise_and:
-				return OperatorInfo(NodeOperation::band, lineNumber, charIndex);
-			case ReservedToken::bitwise_or:
-				return OperatorInfo(NodeOperation::bor, lineNumber, charIndex);
-			case ReservedToken::bitwise_xor:
-				return OperatorInfo(NodeOperation::bxor, lineNumber, charIndex);
-			case ReservedToken::shiftl:
-				return OperatorInfo(NodeOperation::bsl, lineNumber, charIndex);
-			case ReservedToken::shiftr:
-				return OperatorInfo(NodeOperation::bsr, lineNumber, charIndex);
-			case ReservedToken::assign:
-				return OperatorInfo(NodeOperation::assign, lineNumber, charIndex);
-			case ReservedToken::add_assign:
-				return OperatorInfo(NodeOperation::add_assign, lineNumber, charIndex);
-			case ReservedToken::sub_assign:
-				return OperatorInfo(NodeOperation::sub_assign, lineNumber, charIndex);
-			case ReservedToken::concat_assign:
-				return OperatorInfo(NodeOperation::concat_assign, lineNumber, charIndex);
-			case ReservedToken::mul_assign:
-				return OperatorInfo(NodeOperation::mod_assign, lineNumber, charIndex);
-			case ReservedToken::div_assign:
-				return OperatorInfo(NodeOperation::div_assign, lineNumber, charIndex);
-			case ReservedToken::idiv_assign:
-				return OperatorInfo(NodeOperation::idiv_assign, lineNumber, charIndex);
-			case ReservedToken::mod_assign:
-				return OperatorInfo(NodeOperation::mod_assign, lineNumber, charIndex);
-			case ReservedToken::and_assign:
-				return OperatorInfo(NodeOperation::band_assign, lineNumber, charIndex);
-			case ReservedToken::or_assign:
-				return OperatorInfo(NodeOperation::bor_assign, lineNumber, charIndex);
-			case ReservedToken::xor_assign:
-				return OperatorInfo(NodeOperation::bxor_assign, lineNumber, charIndex);
-			case ReservedToken::shiftl_assign:
-				return OperatorInfo(NodeOperation::bsl_assign, lineNumber, charIndex);
-			case ReservedToken::shiftr_assign:
-				return OperatorInfo(NodeOperation::bsr_assign, lineNumber, charIndex);
-			case ReservedToken::logical_not:
-				return OperatorInfo(NodeOperation::lnot, lineNumber, charIndex);
-			case ReservedToken::logical_and:
-				return OperatorInfo(NodeOperation::land, lineNumber, charIndex);
-			case ReservedToken::logical_or:
-				return OperatorInfo(NodeOperation::lor, lineNumber, charIndex);
-			case ReservedToken::eq:
-				return OperatorInfo(NodeOperation::eq, lineNumber, charIndex);
-			case ReservedToken::ne:
-				return OperatorInfo(NodeOperation::ne, lineNumber, charIndex);
-			case ReservedToken::lt:
-				return OperatorInfo(NodeOperation::lt, lineNumber, charIndex);
-			case ReservedToken::gt:
-				return OperatorInfo(NodeOperation::gt, lineNumber, charIndex);
-			case ReservedToken::le:
-				return OperatorInfo(NodeOperation::le, lineNumber, charIndex);
-			case ReservedToken::ge:
-				return OperatorInfo(NodeOperation::ge, lineNumber, charIndex);
-			case ReservedToken::question:
-				return OperatorInfo(NodeOperation::ternary, lineNumber, charIndex);
-			case ReservedToken::comma:
-				return OperatorInfo(NodeOperation::comma, lineNumber, charIndex);
-			case ReservedToken::open_round:
-				return OperatorInfo(NodeOperation::call, lineNumber, charIndex);
-			case ReservedToken::open_square:
-				return OperatorInfo(NodeOperation::index, lineNumber, charIndex);
-			case ReservedToken::kw_sizeof:
-				return OperatorInfo(NodeOperation::size, lineNumber, charIndex);
-			case ReservedToken::kw_tostring:
-				return OperatorInfo(NodeOperation::tostring, lineNumber, charIndex);
-			case ReservedToken::open_curly:
-				return OperatorInfo(NodeOperation::init, lineNumber, charIndex);
+			case ReservedToken::Inc:
+				return prefix ? OperatorInfo(NodeOperation::Preinc, lineNumber, charIndex)
+							  : OperatorInfo(NodeOperation::Postinc, lineNumber, charIndex);
+			case ReservedToken::Dec:
+				return prefix ? OperatorInfo(NodeOperation::Predec, lineNumber, charIndex)
+							  : OperatorInfo(NodeOperation::Postdec, lineNumber, charIndex);
+			case ReservedToken::Add:
+				return prefix ? OperatorInfo(NodeOperation::Positive, lineNumber, charIndex)
+							  : OperatorInfo(NodeOperation::Add, lineNumber, charIndex);
+			case ReservedToken::Sub:
+				return prefix ? OperatorInfo(NodeOperation::Negative, lineNumber, charIndex)
+							  : OperatorInfo(NodeOperation::Sub, lineNumber, charIndex);
+			case ReservedToken::Concat:
+				return OperatorInfo(NodeOperation::Concat, lineNumber, charIndex);
+			case ReservedToken::Mul:
+				return OperatorInfo(NodeOperation::Mul, lineNumber, charIndex);
+			case ReservedToken::Div:
+				return OperatorInfo(NodeOperation::Div, lineNumber, charIndex);
+			case ReservedToken::Idiv:
+				return OperatorInfo(NodeOperation::Idiv, lineNumber, charIndex);
+			case ReservedToken::Mod:
+				return OperatorInfo(NodeOperation::Mod, lineNumber, charIndex);
+			case ReservedToken::BitwiseNot:
+				return OperatorInfo(NodeOperation::Bnot, lineNumber, charIndex);
+			case ReservedToken::BitwiseAnd:
+				return OperatorInfo(NodeOperation::Band, lineNumber, charIndex);
+			case ReservedToken::BitwiseOr:
+				return OperatorInfo(NodeOperation::Bor, lineNumber, charIndex);
+			case ReservedToken::BitwiseXor:
+				return OperatorInfo(NodeOperation::Bxor, lineNumber, charIndex);
+			case ReservedToken::Shiftl:
+				return OperatorInfo(NodeOperation::Bsl, lineNumber, charIndex);
+			case ReservedToken::Shiftr:
+				return OperatorInfo(NodeOperation::Bsr, lineNumber, charIndex);
+			case ReservedToken::Assign:
+				return OperatorInfo(NodeOperation::Assign, lineNumber, charIndex);
+			case ReservedToken::AddAssign:
+				return OperatorInfo(NodeOperation::AddAssign, lineNumber, charIndex);
+			case ReservedToken::SubAssign:
+				return OperatorInfo(NodeOperation::SubAssign, lineNumber, charIndex);
+			case ReservedToken::ConcatAssign:
+				return OperatorInfo(NodeOperation::ConcatAssign, lineNumber, charIndex);
+			case ReservedToken::MulAssign:
+				return OperatorInfo(NodeOperation::ModAssign, lineNumber, charIndex);
+			case ReservedToken::DivAssign:
+				return OperatorInfo(NodeOperation::DivAssign, lineNumber, charIndex);
+			case ReservedToken::IdivAssign:
+				return OperatorInfo(NodeOperation::IdivAssign, lineNumber, charIndex);
+			case ReservedToken::ModAssign:
+				return OperatorInfo(NodeOperation::ModAssign, lineNumber, charIndex);
+			case ReservedToken::AndAssign:
+				return OperatorInfo(NodeOperation::BandAssign, lineNumber, charIndex);
+			case ReservedToken::OrAssign:
+				return OperatorInfo(NodeOperation::BorAssign, lineNumber, charIndex);
+			case ReservedToken::XorAssign:
+				return OperatorInfo(NodeOperation::BxorAssign, lineNumber, charIndex);
+			case ReservedToken::ShiftlAssign:
+				return OperatorInfo(NodeOperation::BslAssign, lineNumber, charIndex);
+			case ReservedToken::ShiftrAssign:
+				return OperatorInfo(NodeOperation::BsrAssign, lineNumber, charIndex);
+			case ReservedToken::LogicalNot:
+				return OperatorInfo(NodeOperation::Lnot, lineNumber, charIndex);
+			case ReservedToken::LogicalAnd:
+				return OperatorInfo(NodeOperation::Land, lineNumber, charIndex);
+			case ReservedToken::LogicalOr:
+				return OperatorInfo(NodeOperation::Lor, lineNumber, charIndex);
+			case ReservedToken::Eq:
+				return OperatorInfo(NodeOperation::Eq, lineNumber, charIndex);
+			case ReservedToken::Ne:
+				return OperatorInfo(NodeOperation::Ne, lineNumber, charIndex);
+			case ReservedToken::Lt:
+				return OperatorInfo(NodeOperation::Lt, lineNumber, charIndex);
+			case ReservedToken::Gt:
+				return OperatorInfo(NodeOperation::Gt, lineNumber, charIndex);
+			case ReservedToken::Le:
+				return OperatorInfo(NodeOperation::Le, lineNumber, charIndex);
+			case ReservedToken::Ge:
+				return OperatorInfo(NodeOperation::Ge, lineNumber, charIndex);
+			case ReservedToken::Question:
+				return OperatorInfo(NodeOperation::Ternary, lineNumber, charIndex);
+			case ReservedToken::Comma:
+				return OperatorInfo(NodeOperation::Comma, lineNumber, charIndex);
+			case ReservedToken::OpenRound:
+				return OperatorInfo(NodeOperation::Call, lineNumber, charIndex);
+			case ReservedToken::OpenSquare:
+				return OperatorInfo(NodeOperation::Index, lineNumber, charIndex);
+			case ReservedToken::KwSizeof:
+				return OperatorInfo(NodeOperation::Size, lineNumber, charIndex);
+			case ReservedToken::KwToString:
+				return OperatorInfo(NodeOperation::ToString, lineNumber, charIndex);
+			case ReservedToken::OpenCurly:
+				return OperatorInfo(NodeOperation::Init, lineNumber, charIndex);
 			default:
 				throw unexpectedSyntaxError(std::to_string(token), lineNumber, charIndex);
 			}
@@ -283,13 +283,13 @@ namespace sharpsenLang
 			{
 				switch (t.getReservedToken())
 				{
-				case ReservedToken::semicolon:
-				case ReservedToken::close_round:
-				case ReservedToken::close_square:
-				case ReservedToken::close_curly:
-				case ReservedToken::colon:
+				case ReservedToken::Semicolon:
+				case ReservedToken::CloseRound:
+				case ReservedToken::CloseSquare:
+				case ReservedToken::CloseCurly:
+				case ReservedToken::Colon:
 					return true;
-				case ReservedToken::comma:
+				case ReservedToken::Comma:
 					return !allowComma;
 				default:
 					return false;
@@ -301,7 +301,7 @@ namespace sharpsenLang
 
 		bool isEvaluatedBefore(const OperatorInfo &l, const OperatorInfo &r)
 		{
-			return l.associativity == OperatorAssociativity::left_to_right ? l.precedence <= r.precedence : l.precedence < r.precedence;
+			return l.associativity == OperatorAssociativity::LeftToRight ? l.precedence <= r.precedence : l.precedence < r.precedence;
 		}
 
 		void popOneOperator(
@@ -316,7 +316,7 @@ namespace sharpsenLang
 			std::vector<NodePtr> operands;
 			operands.resize(operatorStack.top().number_of_operands);
 
-			if (operatorStack.top().precedence != OperatorPrecedence::prefix)
+			if (operatorStack.top().precedence != OperatorPrecedence::Prefix)
 			{
 				operatorStack.top().lineNumber = operandStack.top()->getLineNumber();
 				operatorStack.top().charIndex = operandStack.top()->getCharIndex();
@@ -348,12 +348,12 @@ namespace sharpsenLang
 					OperatorInfo oi = getOperatorInfo(
 						it->getReservedToken(), expectedOperand, it->getLineNumber(), it->getCharIndex());
 
-					if (oi.operation == NodeOperation::call && expectedOperand)
+					if (oi.operation == NodeOperation::Call && expectedOperand)
 					{
 						//open round bracket is misinterpreted as a function call
 						++it;
 						operandStack.push(parseExpressionTreeImpl(context, it, true, false));
-						if (it->hasValue(ReservedToken::close_round))
+						if (it->hasValue(ReservedToken::CloseRound))
 						{
 							expectedOperand = false;
 							continue;
@@ -364,20 +364,20 @@ namespace sharpsenLang
 						}
 					}
 
-					if (oi.operation == NodeOperation::init && expectedOperand)
+					if (oi.operation == NodeOperation::Init && expectedOperand)
 					{
 						++it;
 						std::vector<NodePtr> children;
-						if (!it->hasValue(ReservedToken::close_curly))
+						if (!it->hasValue(ReservedToken::CloseCurly))
 						{
 							while (true)
 							{
 								children.push_back(parseExpressionTreeImpl(context, it, false, false));
-								if (it->hasValue(ReservedToken::close_curly))
+								if (it->hasValue(ReservedToken::CloseCurly))
 								{
 									break;
 								}
-								else if (it->hasValue(ReservedToken::comma))
+								else if (it->hasValue(ReservedToken::Comma))
 								{
 									++it;
 								}
@@ -389,7 +389,7 @@ namespace sharpsenLang
 						}
 						operandStack.push(std::make_unique<Node>(
 							context,
-							NodeOperation::init,
+							NodeOperation::Init,
 							std::move(children),
 							it->getLineNumber(),
 							it->getCharIndex()));
@@ -398,7 +398,7 @@ namespace sharpsenLang
 						continue;
 					}
 
-					if ((oi.precedence == OperatorPrecedence::prefix) != expectedOperand)
+					if ((oi.precedence == OperatorPrecedence::Prefix) != expectedOperand)
 					{
 						throw unexpectedSyntaxError(
 							std::to_string(it->getValue()),
@@ -413,13 +413,13 @@ namespace sharpsenLang
 
 					switch (oi.operation)
 					{
-					case NodeOperation::call:
+					case NodeOperation::Call:
 						++it;
-						if (!it->hasValue(ReservedToken::close_round))
+						if (!it->hasValue(ReservedToken::CloseRound))
 						{
 							while (true)
 							{
-								bool remove_lvalue = !it->hasValue(ReservedToken::bitwise_and);
+								bool remove_lvalue = !it->hasValue(ReservedToken::BitwiseAnd);
 								if (!remove_lvalue)
 								{
 									++it;
@@ -433,7 +433,7 @@ namespace sharpsenLang
 									argument_vector.push_back(std::move(argument));
 									argument = std::make_unique<Node>(
 										context,
-										NodeOperation::param,
+										NodeOperation::Param,
 										std::move(argument_vector),
 										lineNumber,
 										charIndex);
@@ -452,11 +452,11 @@ namespace sharpsenLang
 
 								++oi.number_of_operands;
 
-								if (it->hasValue(ReservedToken::close_round))
+								if (it->hasValue(ReservedToken::CloseRound))
 								{
 									break;
 								}
-								else if (it->hasValue(ReservedToken::comma))
+								else if (it->hasValue(ReservedToken::Comma))
 								{
 									++it;
 								}
@@ -467,18 +467,18 @@ namespace sharpsenLang
 							}
 						}
 						break;
-					case NodeOperation::index:
+					case NodeOperation::Index:
 						++it;
 						operandStack.push(parseExpressionTreeImpl(context, it, true, false));
-						if (!it->hasValue(ReservedToken::close_square))
+						if (!it->hasValue(ReservedToken::CloseSquare))
 						{
 							throw syntaxError("Expected closing ]'", it->getLineNumber(), it->getCharIndex());
 						}
 						break;
-					case NodeOperation::ternary:
+					case NodeOperation::Ternary:
 						++it;
 						operandStack.push(parseExpressionTreeImpl(context, it, true, false));
-						if (!it->hasValue(ReservedToken::colon))
+						if (!it->hasValue(ReservedToken::Colon))
 						{
 							throw syntaxError("Expected ':'", it->getLineNumber(), it->getCharIndex());
 						}
@@ -489,7 +489,7 @@ namespace sharpsenLang
 
 					operatorStack.push(oi);
 
-					expectedOperand = (oi.precedence != OperatorPrecedence::postfix);
+					expectedOperand = (oi.precedence != OperatorPrecedence::Postfix);
 				}
 				else
 				{

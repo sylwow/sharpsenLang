@@ -11,9 +11,9 @@ namespace sharpsenLang
 
 	enum struct IdentifierScope
 	{
-		global_variable,
-		local_variable,
-		function,
+		GlobalVariable,
+		LocalVariable,
+		Function,
 	};
 
 	class IdentifierInfo

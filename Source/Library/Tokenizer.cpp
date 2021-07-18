@@ -14,27 +14,27 @@ namespace sharpsenLang
 	{
 		enum struct CharacterType
 		{
-			eof,
-			space,
-			alphanum,
-			punct,
+			Eof,
+			Space,
+			Alphanum,
+			Punct,
 		};
 
 		CharacterType getCharacterType(int c)
 		{
 			if (c < 0)
 			{
-				return CharacterType::eof;
+				return CharacterType::Eof;
 			}
 			if (std::isspace(c))
 			{
-				return CharacterType::space;
+				return CharacterType::Space;
 			}
 			if (std::isalpha(c) || std::isdigit(c) || c == '_')
 			{
-				return CharacterType::alphanum;
+				return CharacterType::Alphanum;
 			}
-			return CharacterType::punct;
+			return CharacterType::Punct;
 		}
 
 		Token fetchWord(PushBackStream &stream)
@@ -59,7 +59,7 @@ namespace sharpsenLang
 					word.pop_back();
 					break;
 				}
-			} while (getCharacterType(c) == CharacterType::alphanum || (isNumber && c == '.'));
+			} while (getCharacterType(c) == CharacterType::Alphanum || (isNumber && c == '.'));
 
 			stream.pushBack(c);
 
@@ -108,7 +108,7 @@ namespace sharpsenLang
 				std::string unexpected;
 				size_t err_line_number = stream.lineNumber();
 				size_t err_char_index = stream.charIndex();
-				for (int c = stream(); getCharacterType(c) == CharacterType::punct; c = stream())
+				for (int c = stream(); getCharacterType(c) == CharacterType::Punct; c = stream())
 				{
 					unexpected.push_back(char(c));
 				}
@@ -125,7 +125,7 @@ namespace sharpsenLang
 
 			bool escaped = false;
 			int c = stream();
-			for (; getCharacterType(c) != CharacterType::eof; c = stream())
+			for (; getCharacterType(c) != CharacterType::Eof; c = stream())
 			{
 				if (c == '\\')
 				{
@@ -182,7 +182,7 @@ namespace sharpsenLang
 			do
 			{
 				c = stream();
-			} while (c != '\n' && getCharacterType(c) != CharacterType::eof);
+			} while (c != '\n' && getCharacterType(c) != CharacterType::Eof);
 
 			if (c != '\n')
 			{
@@ -202,7 +202,7 @@ namespace sharpsenLang
 					return;
 				}
 				closing = (c == '*');
-			} while (getCharacterType(c) != CharacterType::eof);
+			} while (getCharacterType(c) != CharacterType::Eof);
 
 			stream.pushBack(c);
 			throw parsingError("Expected closing '*/'", stream.lineNumber(), stream.charIndex());
@@ -217,14 +217,14 @@ namespace sharpsenLang
 				int c = stream();
 				switch (getCharacterType(c))
 				{
-				case CharacterType::eof:
+				case CharacterType::Eof:
 					return {Eof(), lineNumber, charIndex};
-				case CharacterType::space:
+				case CharacterType::Space:
 					continue;
-				case CharacterType::alphanum:
+				case CharacterType::Alphanum:
 					stream.pushBack(c);
 					return fetchWord(stream);
-				case CharacterType::punct:
+				case CharacterType::Punct:
 					switch (c)
 					{
 					case '"':
