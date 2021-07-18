@@ -672,7 +672,7 @@ namespace sharpsenLang
 			}
 		};
 
-		Expression<Lvalue>::Ptr buildLvalueExpression(TypeHandle type_id, const NodePtr &np, CompilerContext &context);
+		Expression<Lvalue>::Ptr buildLvalueExpression(TypeHandle typeId, const NodePtr &np, CompilerContext &context);
 
 #define RETURN_EXPRESSION_OF_TYPE(T)              \
 	if constexpr (IsConvertible<T, R>::value)     \
@@ -1195,7 +1195,7 @@ namespace sharpsenLang
 #undef CHECK_IDENTIFIER
 #undef RETURN_EXPRESSION_OF_TYPE
 
-		Expression<Lvalue>::Ptr buildLvalueExpression(TypeHandle type_id, const NodePtr &np, CompilerContext &context)
+		Expression<Lvalue>::Ptr buildLvalueExpression(TypeHandle typeId, const NodePtr &np, CompilerContext &context)
 		{
 			return std::visit(
 				overloaded{
@@ -1229,7 +1229,7 @@ namespace sharpsenLang
 						throw ExpressionBuilderError();
 						return Expression<Lvalue>::Ptr();
 					}},
-				*type_id);
+				*typeId);
 		}
 
 		class EmptyExpression : public Expression<void>
@@ -1240,14 +1240,14 @@ namespace sharpsenLang
 		};
 
 		template <typename R>
-		typename Expression<R>::Ptr buildExpression(TypeHandle type_id, CompilerContext &context, TokensIterator &it, bool allow_comma)
+		typename Expression<R>::Ptr buildExpression(TypeHandle typeId, CompilerContext &context, TokensIterator &it, bool allow_comma)
 		{
 			size_t line_number = it->getLineNumber();
 			size_t char_index = it->getCharIndex();
 
 			try
 			{
-				NodePtr np = parseExpressionTree(context, it, type_id, allow_comma);
+				NodePtr np = parseExpressionTree(context, it, typeId, allow_comma);
 
 				if constexpr (std::is_same<void, R>::value)
 				{
@@ -1259,7 +1259,7 @@ namespace sharpsenLang
 				if constexpr (std::is_same<R, Lvalue>::value)
 				{
 					return buildLvalueExpression(
-						type_id,
+						typeId,
 						np,
 						context);
 				}
@@ -1300,13 +1300,13 @@ namespace sharpsenLang
 	Expression<Lvalue>::Ptr buildInitializationExpression(
 		CompilerContext &context,
 		TokensIterator &it,
-		TypeHandle type_id,
+		TypeHandle typeId,
 		bool allow_comma)
 	{
-		return buildExpression<Lvalue>(type_id, context, it, allow_comma);
+		return buildExpression<Lvalue>(typeId, context, it, allow_comma);
 	}
 
-	Expression<Lvalue>::Ptr buildDefaultInitialization(TypeHandle type_id)
+	Expression<Lvalue>::Ptr buildDefaultInitialization(TypeHandle typeId)
 	{
 		return std::visit(
 			overloaded{
@@ -1349,6 +1349,6 @@ namespace sharpsenLang
 					//cannot happen
 					return Expression<Lvalue>::Ptr();
 				}},
-			*type_id);
+			*typeId);
 	}
 }

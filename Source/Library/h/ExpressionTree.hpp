@@ -107,7 +107,7 @@ namespace sharpsenLang
 		size_t getLineNumber() const;
 		size_t getCharIndex() const;
 
-		void checkConversion(TypeHandle type_id, bool lvalue) const;
+		void checkConversion(TypeHandle typeId, bool lvalue) const;
 	};
 
 }

@@ -546,12 +546,12 @@ namespace sharpsenLang
 	}
 
 	NodePtr parseExpressionTree(
-		CompilerContext &context, TokensIterator &it, TypeHandle type_id, bool allowComma)
+		CompilerContext &context, TokensIterator &it, TypeHandle typeId, bool allowComma)
 	{
-		NodePtr ret = parseExpressionTreeImpl(context, it, allowComma, type_id == TypeRegistry::getVoidHandle());
+		NodePtr ret = parseExpressionTreeImpl(context, it, allowComma, typeId == TypeRegistry::getVoidHandle());
 		if (ret)
 		{
-			ret->checkConversion(type_id, false);
+			ret->checkConversion(typeId, false);
 		}
 		return ret;
 	}

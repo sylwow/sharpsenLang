@@ -12,5 +12,5 @@ namespace sharpsenLang
 
 	class CompilerContext;
 
-	NodePtr parseExpressionTree(CompilerContext &context, TokensIterator &it, TypeHandle type_id, bool allow_comma);
+	NodePtr parseExpressionTree(CompilerContext &context, TokensIterator &it, TypeHandle typeId, bool allow_comma);
 }

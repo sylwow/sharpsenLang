@@ -32,7 +32,7 @@ namespace sharpsenLang
 	Expression<Lvalue>::Ptr buildInitializationExpression(
 		CompilerContext &context,
 		TokensIterator &it,
-		TypeHandle type_id,
+		TypeHandle typeId,
 		bool allow_comma);
-	Expression<Lvalue>::Ptr buildDefaultInitialization(TypeHandle type_id);
+	Expression<Lvalue>::Ptr buildDefaultInitialization(TypeHandle typeId);
 }

@@ -5,26 +5,26 @@
 #include "Tokenizer.hpp"
 
 namespace sharpsenLang {
-	function_declaration parse_function_declaration(CompilerContext& ctx, TokensIterator& it) {
-		function_declaration ret;
+	FunctionDeclaration parseFunctionDeclaration(CompilerContext& ctx, TokensIterator& it) {
+		FunctionDeclaration ret;
 		
-		parse_token_value(ctx, it, ReservedToken::KwFunction);
+		parseTokenValue(ctx, it, ReservedToken::KwFunction);
 		
 		FunctionType ft;
-		ft.returnTypeId = parse_type(ctx, it);
-		ret.name = parse_declaration_name(ctx, it);
+		ft.returnTypeId = parseType(ctx, it);
+		ret.name = parseDeclarationName(ctx, it);
 		
 		{
 			auto _ = ctx.function();
 			
-			parse_token_value(ctx, it, ReservedToken::OpenRound);
+			parseTokenValue(ctx, it, ReservedToken::OpenRound);
 			
 			while(!it->hasValue(ReservedToken::CloseRound)) {
 				if (!ret.params.empty()) {
-					parse_token_value(ctx, it, ReservedToken::Comma);
+					parseTokenValue(ctx, it, ReservedToken::Comma);
 				}
 				
-				TypeHandle t = parse_type(ctx, it);
+				TypeHandle t = parseType(ctx, it);
 				bool byref = false;
 				if (it->hasValue(ReservedToken::BitwiseAnd)) {
 					byref = true;
@@ -33,7 +33,7 @@ namespace sharpsenLang {
 				ft.paramTypeId.push_back({t, byref});
 				
 				if (!it->hasValue(ReservedToken::CloseRound) && !it->hasValue(ReservedToken::Comma)) {
-					ret.params.push_back(parse_declaration_name(ctx, it));
+					ret.params.push_back(parseDeclarationName(ctx, it));
 				} else {
 					ret.params.push_back("@"+std::to_string(ret.params.size()));
 				}
@@ -41,17 +41,17 @@ namespace sharpsenLang {
 			++it;
 		}
 		
-		ret.type_id = ctx.getHandle(ft);
+		ret.typeId = ctx.getHandle(ft);
 		
 		return ret;
 	}
 
-	incomplete_function::incomplete_function(CompilerContext& ctx, TokensIterator& it) {
-		_decl = parse_function_declaration(ctx, it);
+	IncompleteFunction::IncompleteFunction(CompilerContext& ctx, TokensIterator& it) {
+		_decl = parseFunctionDeclaration(ctx, it);
 		
 		_tokens.push_back(*it);
 		
-		parse_token_value(ctx, it, ReservedToken::OpenCurly);
+		parseTokenValue(ctx, it, ReservedToken::OpenCurly);
 		
 		int nesting = 1;
 		
@@ -72,23 +72,23 @@ namespace sharpsenLang {
 			throw unexpectedSyntaxError("end of file", it->getLineNumber(), it->getCharIndex());
 		}
 		
-		ctx.createFunction(_decl.name, _decl.type_id);
+		ctx.createFunction(_decl.name, _decl.typeId);
 	}
 	
-	incomplete_function::incomplete_function(incomplete_function&& orig) noexcept:
+	IncompleteFunction::IncompleteFunction(IncompleteFunction&& orig) noexcept:
 		_tokens(std::move(orig._tokens)),
 		_decl(std::move(orig._decl))
 	{
 	}
 	
-	const function_declaration& incomplete_function::get_decl() const {
+	const FunctionDeclaration& IncompleteFunction::getDecl() const {
 		return _decl;
 	}
 	
-	Function incomplete_function::compile(CompilerContext& ctx) {
+	Function IncompleteFunction::compile(CompilerContext& ctx) {
 		auto _ = ctx.function();
 		
-		const FunctionType* ft = std::get_if<FunctionType>(_decl.type_id);
+		const FunctionType* ft = std::get_if<FunctionType>(_decl.typeId);
 		
 		for (int i = 0; i < int(_decl.params.size()); ++i) {
 			ctx.createParam(std::move(_decl.params[i]), ft->paramTypeId[i].typeId);
@@ -96,7 +96,7 @@ namespace sharpsenLang {
 		
 		TokensIterator it(_tokens);
 		
-		shared_statement_ptr stmt = compile_function_block(ctx, it, ft->returnTypeId);
+		SharedStatementPtr stmt = compileFunctionBlock(ctx, it, ft->returnTypeId);
 		
 		return [stmt=std::move(stmt)] (RuntimeContext& ctx) {
 			stmt->execute(ctx);

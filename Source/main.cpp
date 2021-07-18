@@ -10,15 +10,15 @@ int main() {
 	
 	Module m;
 	
-	add_standard_functions(m);
+	addStandardFunctions(m);
 	
-	m.add_external_function("greater", std::function<Number(Number, Number)>([](Number x, Number y){
+	m.addExternalFunction("greater", std::function<Number(Number, Number)>([](Number x, Number y){
 		return x > y;
 	}));
 	
-	auto s_main = m.create_public_function_caller<void>("main");
+	auto s_main = m.createPublicFunctionCaller<void>("main");
 	
-	if (m.try_load(path.c_str(), &std::cerr)) {
+	if (m.tryLoad(path.c_str(), &std::cerr)) {
 		s_main();
 	}
 	

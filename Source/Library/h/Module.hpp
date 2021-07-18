@@ -13,20 +13,20 @@ namespace sharpsenLang
 	namespace details
 	{
 		template <typename R, typename Unpacked, typename Left>
-		struct unpacker;
+		struct Unpacker;
 
 		template <typename R, typename... Unpacked, typename Left0, typename... Left>
-		struct unpacker<R, std::tuple<Unpacked...>, std::tuple<Left0, Left...>>
+		struct Unpacker<R, std::tuple<Unpacked...>, std::tuple<Left0, Left...>>
 		{
 			R operator()(
 				RuntimeContext &ctx,
 				const std::function<R(Unpacked..., Left0, Left...)> &f,
 				std::tuple<Unpacked...> t) const
 			{
-				using next_unpacker = unpacker<R, std::tuple<Unpacked..., Left0>, std::tuple<Left...>>;
+				using NextUnpacker = Unpacker<R, std::tuple<Unpacked..., Left0>, std::tuple<Left...>>;
 				if constexpr (std::is_convertible<const std::string &, Left0>::value)
 				{
-					return next_unpacker()(
+					return NextUnpacker()(
 						ctx,
 						f,
 						std::tuple_cat(
@@ -40,7 +40,7 @@ namespace sharpsenLang
 				else
 				{
 					static_assert(std::is_convertible<Number, Left0>::value);
-					return next_unpacker()(
+					return NextUnpacker()(
 						ctx,
 						f,
 						std::tuple_cat(
@@ -55,7 +55,7 @@ namespace sharpsenLang
 		};
 
 		template <typename R, typename... Unpacked>
-		struct unpacker<R, std::tuple<Unpacked...>, std::tuple<>>
+		struct Unpacker<R, std::tuple<Unpacked...>, std::tuple<>>
 		{
 			R operator()(
 				RuntimeContext &ctx,
@@ -67,17 +67,17 @@ namespace sharpsenLang
 		};
 
 		template <typename R, typename... Args>
-		Function create_external_function(std::function<R(Args...)> f)
+		Function createExternalFunction(std::function<R(Args...)> f)
 		{
 			return [f = std::move(f)](RuntimeContext &ctx)
 			{
 				if constexpr (std::is_same<R, void>::value)
 				{
-					unpacker<R, std::tuple<>, std::tuple<Args...>>()(ctx, f, std::tuple<>());
+					Unpacker<R, std::tuple<>, std::tuple<Args...>>()(ctx, f, std::tuple<>());
 				}
 				else
 				{
-					R retval = unpacker<R, std::tuple<>, std::tuple<Args...>>()(ctx, f, std::tuple<>());
+					R retval = Unpacker<R, std::tuple<>, std::tuple<Args...>>()(ctx, f, std::tuple<>());
 					if constexpr (std::is_convertible<R, std::string>::value)
 					{
 						ctx.retval() = std::make_shared<VariableImpl<String>>(std::make_shared<std::string>(std::move(retval)));
@@ -92,7 +92,7 @@ namespace sharpsenLang
 		}
 
 		template <typename T>
-		struct retval_declaration
+		struct RetvalDeclaration
 		{
 			static constexpr const char *result()
 			{
@@ -113,7 +113,7 @@ namespace sharpsenLang
 		};
 
 		template <typename T>
-		struct argument_declaration
+		struct ArgumentDeclaration
 		{
 			static constexpr const char *result()
 			{
@@ -129,15 +129,15 @@ namespace sharpsenLang
 			}
 		};
 
-		struct function_argument_string
+		struct FunctionArgumentString
 		{
 			std::string str;
-			function_argument_string(const char *p)
+			FunctionArgumentString(const char *p)
 				: str(p)
 			{
 			}
 
-			function_argument_string &operator+=(const function_argument_string &oth)
+			FunctionArgumentString &operator+=(const FunctionArgumentString &oth)
 			{
 				str += ", ";
 				str += oth.str;
@@ -146,33 +146,33 @@ namespace sharpsenLang
 		};
 
 		template <typename R, typename... Args>
-		std::string create_function_declaration(const char *name)
+		std::string createFunctionDeclaration(const char *name)
 		{
 			if constexpr (sizeof...(Args) == 0)
 			{
-				return std::string("function ") + retval_declaration<R>::result() + " " + name + "()";
+				return std::string("function ") + RetvalDeclaration<R>::result() + " " + name + "()";
 			}
 			else
 			{
-				return std::string("function ") + retval_declaration<R>::result() + " " + name +
+				return std::string("function ") + RetvalDeclaration<R>::result() + " " + name +
 					   "(" +
-					   (function_argument_string(argument_declaration<Args>::result()) += ...).str +
+					   (FunctionArgumentString(ArgumentDeclaration<Args>::result()) += ...).str +
 					   ")";
 			}
 		}
 
-		inline VariablePtr to_variable(Number n)
+		inline VariablePtr toVariable(Number n)
 		{
 			return std::make_shared<VariableImpl<Number>>(n);
 		}
 
-		inline VariablePtr to_variable(std::string str)
+		inline VariablePtr toVariable(std::string str)
 		{
 			return std::make_shared<VariableImpl<String>>(std::make_shared<std::string>(std::move(str)));
 		}
 
 		template <typename T>
-		T move_from_variable(const VariablePtr &v)
+		T moveFromVariable(const VariablePtr &v)
 		{
 			if constexpr (std::is_same<T, std::string>::value)
 			{
@@ -186,55 +186,55 @@ namespace sharpsenLang
 		}
 	}
 
-	class module_impl;
+	class ModuleImpl;
 
 	class Module
 	{
 	private:
-		std::unique_ptr<module_impl> _impl;
-		void add_external_function_impl(std::string declaration, Function f);
-		void add_public_function_declaration(std::string declaration, std::string name, std::shared_ptr<Function> fptr);
-		RuntimeContext *get_runtime_context();
+		std::unique_ptr<ModuleImpl> _impl;
+		void addExternalFunctionImpl(std::string declaration, Function f);
+		void addPublicFunctionDeclaration(std::string declaration, std::string name, std::shared_ptr<Function> fptr);
+		RuntimeContext *getRuntimeContext();
 
 	public:
 		Module();
 
 		template <typename R, typename... Args>
-		void add_external_function(const char *name, std::function<R(Args...)> f)
+		void addExternalFunction(const char *name, std::function<R(Args...)> f)
 		{
-			add_external_function_impl(
-				details::create_function_declaration<R, Args...>(name),
-				details::create_external_function(std::move(f)));
+			addExternalFunctionImpl(
+				details::createFunctionDeclaration<R, Args...>(name),
+				details::createExternalFunction(std::move(f)));
 		}
 
 		template <typename R, typename... Args>
-		auto create_public_function_caller(std::string name)
+		auto createPublicFunctionCaller(std::string name)
 		{
 			std::shared_ptr<Function> fptr = std::make_shared<Function>();
-			std::string decl = details::create_function_declaration<R, Args...>(name.c_str());
-			add_public_function_declaration(std::move(decl), std::move(name), fptr);
+			std::string decl = details::createFunctionDeclaration<R, Args...>(name.c_str());
+			addPublicFunctionDeclaration(std::move(decl), std::move(name), fptr);
 
 			return [this, fptr](Args... args)
 			{
 				if constexpr (std::is_same<R, void>::value)
 				{
-					get_runtime_context()->call(
+					getRuntimeContext()->call(
 						*fptr,
-						{details::to_variable(std::move(args))...});
+						{details::toVariable(std::move(args))...});
 				}
 				else
 				{
-					return details::move_from_variable<R>(get_runtime_context()->call(
+					return details::moveFromVariable<R>(getRuntimeContext()->call(
 						*fptr,
-						{details::to_variable(args)...}));
+						{details::toVariable(args)...}));
 				}
 			};
 		}
 
 		void load(const char *path);
-		bool try_load(const char *path, std::ostream *err = nullptr) noexcept;
+		bool tryLoad(const char *path, std::ostream *err = nullptr) noexcept;
 
-		void reset_globals();
+		void resetGlobals();
 
 		~Module();
 	};
