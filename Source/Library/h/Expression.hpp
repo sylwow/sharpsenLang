@@ -1,8 +1,9 @@
 #pragma once
+#include <string>
+
 #include "Variable.hpp"
 #include "Types.hpp"
 
-#include <string>
 
 namespace sharpsenLang
 {
