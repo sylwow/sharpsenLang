@@ -97,6 +97,46 @@ TEST_F(TokenizerTest, StringLine)
     EXPECT_EQ(expected, result);
 }
 
+TEST_F(TokenizerTest, DeclareClass)
+{
+    auto input = "class MyClass { string g };";
+
+    auto result = getResult(input);
+
+    std::vector<Token> expected{
+        {ReservedToken::KwClass},
+        {Identifier{"MyClass"}},
+        {ReservedToken::OpenCurly},
+        {ReservedToken::KwString},
+        {Identifier{"g"}},
+        {ReservedToken::CloseCurly},
+        {ReservedToken::Semicolon},
+    };
+    bool r = expected == result;
+    EXPECT_EQ(expected, result);
+}
+
+TEST_F(TokenizerTest, MethodCall)
+{
+    auto input = "string g = instance.callMethod();";
+
+    auto result = getResult(input);
+
+    std::vector<Token> expected{
+        {ReservedToken::KwString},
+        {Identifier{"g"}},
+        {ReservedToken::Assign},
+        {Identifier{"instance"}},
+        {ReservedToken::Dot},
+        {Identifier{"callMethod"}},
+        {ReservedToken::OpenRound},
+        {ReservedToken::CloseRound},
+        {ReservedToken::Semicolon},
+    };
+    bool r = expected == result;
+    EXPECT_EQ(expected, result);
+}
+
 TEST_F(TokenizerTest, MultilineVar)
 {
     auto input = R"code(
@@ -263,15 +303,15 @@ TEST_F(TokenizerTest, ComplexFunction)
                 arr[sizeof(arr)] = rnd(100);
             }
             
-            trace(ToString(arr));
+            trace(toString(arr));
             
             sort(&arr, less);
             
-            trace(ToString(arr));
+            trace(toString(arr));
             
             sort(&arr, greater);
             
-            trace(ToString(arr));
+            trace(toString(arr));
         }
         )code";
 

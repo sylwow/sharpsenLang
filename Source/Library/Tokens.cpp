@@ -31,6 +31,8 @@ namespace sharpsenLang
 
 			{"=", ReservedToken::Assign},
 
+			{".", ReservedToken::Dot},
+
 			{"+=", ReservedToken::AddAssign},
 			{"-=", ReservedToken::SubAssign},
 			{"..=", ReservedToken::ConcatAssign},
@@ -74,6 +76,8 @@ namespace sharpsenLang
 		};
 
 		const Lookup<std::string_view, ReservedToken> keywordTokenMap{
+			{"class", ReservedToken::KwClass},
+			
 			{"sizeof", ReservedToken::KwSizeof},
 			{"toString", ReservedToken::KwToString},
 

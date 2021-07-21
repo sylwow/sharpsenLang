@@ -40,8 +40,10 @@ protected:
       EXPECT_EQ(ReservedToken::##token, *keyword); \
    }
 
+TEST_KEYWORD("class", KwClass)
+
 TEST_KEYWORD("sizeof", KwSizeof)
-TEST_KEYWORD("ToString", KwToString)
+TEST_KEYWORD("toString", KwToString)
 
 TEST_KEYWORD("if", KwIf)
 TEST_KEYWORD("else", KwElse)
@@ -105,6 +107,8 @@ TEST_OPERATOR("<<", Shiftl)
 TEST_OPERATOR(">>", Shiftr)
 
 TEST_OPERATOR("=", Assign)
+
+TEST_OPERATOR(".", Dot)
 
 TEST_OPERATOR("+=", AddAssign)
 TEST_OPERATOR("-=", SubAssign)

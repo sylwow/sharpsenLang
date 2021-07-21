@@ -28,6 +28,8 @@ namespace sharpsenLang
 
 		Assign,
 
+		Dot,
+
 		AddAssign,
 		SubAssign,
 		ConcatAssign,
@@ -68,6 +70,8 @@ namespace sharpsenLang
 
 		OpenSquare,
 		CloseSquare,
+
+		KwClass, 
 
 		KwSizeof,
 		KwToString,
