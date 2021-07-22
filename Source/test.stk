@@ -47,4 +47,10 @@ public function void main() {
 	sort(&arr, greater);
 	
 	trace(toString(arr));
+	
+	trace(mm());
+}
+
+function number mm() {
+	return 9;
 }

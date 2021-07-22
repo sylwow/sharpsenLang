@@ -25,8 +25,8 @@ namespace sharpsenLang
 	{
 	private:
 		FunctionDeclaration _decl;
-		std::deque<Token> _tokens;
 		size_t _index;
+		std::deque<Token> _tokens;
 
 	public:
 		IncompleteFunction(CompilerContext &ctx, TokensIterator &it);
