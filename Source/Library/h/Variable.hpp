@@ -24,6 +24,12 @@ namespace sharpsenLang
 	using Function = std::function<void(RuntimeContext &)>;
 	using Tuple = Array;
 	using InitializerList = Array;
+	struct Class {
+		std::string name;
+		std::string fullName;
+		std::unordered_map<std::string, VariablePtr> properties;
+		std::unordered_map<std::string, Function> methods;
+	};
 
 	using Lvalue = VariablePtr;
 	using Lnumber = std::shared_ptr<VariableImpl<Number>>;
@@ -31,6 +37,7 @@ namespace sharpsenLang
 	using Larray = std::shared_ptr<VariableImpl<Array>>;
 	using Lfunction = std::shared_ptr<VariableImpl<Function>>;
 	using Ltuple = std::shared_ptr<VariableImpl<Tuple>>;
+	using Lclass = std::shared_ptr<VariableImpl<Class>>;
 
 	class Variable : public std::enable_shared_from_this<Variable>
 	{

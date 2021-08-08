@@ -5,6 +5,7 @@
 #include "Tokens.hpp"
 #include "Types.hpp"
 #include "IncompleteFunction.hpp"
+#include "Variable.hpp"
 
 namespace sharpsenLang
 {
@@ -43,7 +44,7 @@ namespace sharpsenLang
 
 		const ClassDeclaration &getDecl() const;
 
-		Function compile(CompilerContext &ctx);
+		Class compile(CompilerContext &ctx);
 	
 	private:
 		ClassDeclaration parseClassDeclaration(CompilerContext &ctx, TokensIterator &it);

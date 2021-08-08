@@ -113,11 +113,18 @@ namespace sharpsenLang
 		return _decl;
 	}
 
-	Function IncompleteClass::compile(CompilerContext &ctx)
+	Class IncompleteClass::compile(CompilerContext &ctx)
 	{
+		Class cl{
+			_decl.name,
+			_decl.name,
+		};
 		for(auto& incompleted: _incompleteMethods) {
-			incompleted.compile(ctx);
+			cl.methods.insert({incompleted.getDecl().name, incompleted.compile(ctx)});
 		}
-		return nullptr;
+		for(auto& property: _decl.properties) {
+			cl.properties.insert({property.name, nullptr});
+		}
+		return cl;
 	}
 }

@@ -46,7 +46,8 @@ namespace sharpsenLang {
 		return ret;
 	}
 
-	IncompleteFunction::IncompleteFunction(CompilerContext& ctx, TokensIterator& it) {
+	IncompleteFunction::IncompleteFunction(CompilerContext& ctx, TokensIterator& it, ClassType* parentClass) {
+		this->parentClass = parentClass;
 		_decl = parseFunctionDeclaration(ctx, it);
 		
 		_tokens.push_back(*it);
@@ -72,6 +73,9 @@ namespace sharpsenLang {
 			throw unexpectedSyntaxError("end of file", it->getLineNumber(), it->getCharIndex());
 		}
 		
+		if(isMethod()) {
+			_decl.name = parentClass->fullName + "::" + _decl.name;
+		} 
 		ctx.createFunction(_decl.name, _decl.typeId);
 	}
 	
