@@ -736,45 +736,49 @@ namespace sharpsenLang
 				std::make_unique<ConstantExpression<R, Number>>(1));                             \
 		}
 
-#define CHECK_TO_STRING_OPERATION()                                                                           \
-	case NodeOperation::ToString:                                                                             \
-		if (np->getChildren()[0]->isLvalue())                                                                 \
-		{                                                                                                     \
-			return ExpressionPtr(std::make_unique<ToStringExpression<R, Lvalue>>(                             \
-				ExpressionBuilder<Lvalue>::buildExpression(np->getChildren()[0], context)));                  \
-		}                                                                                                     \
-		return std::visit(                                                                                    \
-			overloaded{                                                                                       \
-				[&](SimpleType st) {                                                                          \
-					switch (st)                                                                               \
-					{                                                                                         \
-					case SimpleType::Number:                                                                  \
-						return ExpressionPtr(std::make_unique<ToStringExpression<R, Number>>(                 \
-							ExpressionBuilder<Number>::buildExpression(np->getChildren()[0], context)));      \
-					case SimpleType::String:                                                                  \
-						return ExpressionPtr(std::make_unique<ToStringExpression<R, String>>(                 \
-							ExpressionBuilder<String>::buildExpression(np->getChildren()[0], context)));      \
-					case SimpleType::Void:                                                                    \
-						throw ExpressionBuilderError();                                                       \
-						return ExpressionPtr();                                                               \
-					}                                                                                         \
-				},                                                                                            \
-				[&](const FunctionType &) {                                                                   \
-					return ExpressionPtr(std::make_unique<ToStringExpression<R, Function>>(                   \
-						ExpressionBuilder<Function>::buildExpression(np->getChildren()[0], context)));        \
-				},                                                                                            \
-				[&](const ArrayType &) {                                                                      \
-					return ExpressionPtr(std::make_unique<ToStringExpression<R, Array>>(                      \
-						ExpressionBuilder<Array>::buildExpression(np->getChildren()[0], context)));           \
-				},                                                                                            \
-				[&](const TupleType &) {                                                                      \
-					return ExpressionPtr(std::make_unique<ToStringExpression<R, Tuple>>(                      \
-						ExpressionBuilder<Tuple>::buildExpression(np->getChildren()[0], context)));           \
-				},                                                                                            \
-				[&](const InitListType &) {                                                                   \
-					return ExpressionPtr(std::make_unique<ToStringExpression<R, InitializerList>>(            \
-						ExpressionBuilder<InitializerList>::buildExpression(np->getChildren()[0], context))); \
-				}},                                                                                           \
+#define CHECK_TO_STRING_OPERATION()                                                                                                \
+	case NodeOperation::ToString:                                                                                                  \
+		if (np->getChildren()[0]->isLvalue())                                                                                      \
+		{                                                                                                                          \
+			return ExpressionPtr(std::make_unique<ToStringExpression<R, Lvalue>>(                                                  \
+				ExpressionBuilder<Lvalue>::buildExpression(np->getChildren()[0], context)));                                       \
+		}                                                                                                                          \
+		return std::visit(                                                                                                         \
+			overloaded{                                                                                                            \
+				[&](SimpleType st) {                                                                                               \
+					switch (st)                                                                                                    \
+					{                                                                                                              \
+					case SimpleType::Number:                                                                                       \
+						return ExpressionPtr(std::make_unique<ToStringExpression<R, Number>>(                                      \
+							ExpressionBuilder<Number>::buildExpression(np->getChildren()[0], context)));                           \
+					case SimpleType::String:                                                                                       \
+						return ExpressionPtr(std::make_unique<ToStringExpression<R, String>>(                                      \
+							ExpressionBuilder<String>::buildExpression(np->getChildren()[0], context)));                           \
+					case SimpleType::Void:                                                                                         \
+						throw ExpressionBuilderError();                                                                            \
+						return ExpressionPtr();                                                                                    \
+					}                                                                                                              \
+				},                                                                                                                 \
+				[&](const FunctionType &) {                                                                                        \
+					return ExpressionPtr(std::make_unique<ToStringExpression<R, Function>>(                                        \
+						ExpressionBuilder<Function>::buildExpression(np->getChildren()[0], context)));                             \
+				},                                                                                                                 \
+				[&](const ArrayType &) {                                                                                           \
+					return ExpressionPtr(std::make_unique<ToStringExpression<R, Array>>(                                           \
+						ExpressionBuilder<Array>::buildExpression(np->getChildren()[0], context)));                                \
+				},                                                                                                                 \
+				[&](const TupleType &) {                                                                                           \
+					return ExpressionPtr(std::make_unique<ToStringExpression<R, Tuple>>(                                           \
+						ExpressionBuilder<Tuple>::buildExpression(np->getChildren()[0], context)));                                \
+				},                                                                                                                 \
+				[&](const InitListType &) {                                                                                        \
+					return ExpressionPtr(std::make_unique<ToStringExpression<R, InitializerList>>(                                 \
+						ExpressionBuilder<InitializerList>::buildExpression(np->getChildren()[0], context)));                      \
+				},                                                                                                                 \
+				[&](const ClassType &) { /*todo*/                                                                                  \
+										 return ExpressionPtr(std::make_unique<ToStringExpression<R, InitializerList>>(            \
+											 ExpressionBuilder<InitializerList>::buildExpression(np->getChildren()[0], context))); \
+				}},                                                                                                                \
 			*np->getChildren()[0]->getTypeId());
 
 #define CHECK_BINARY_OPERATION(name, T1, T2)                                           \
@@ -1172,6 +1176,11 @@ namespace sharpsenLang
 						[&](const InitListType &ilt)
 						{
 							RETURN_EXPRESSION_OF_TYPE(InitializerList);
+						},
+						[&](const ClassType &ct)
+						{
+							// todo
+							return ExpressionPtr();
 						}},
 					*np->getTypeId());
 			}
@@ -1227,6 +1236,12 @@ namespace sharpsenLang
 					[&](const InitListType &)
 					{
 						throw ExpressionBuilderError();
+						return Expression<Lvalue>::Ptr();
+					},
+					[&](const ClassType &)
+					{
+						throw ExpressionBuilderError();
+						// todo
 						return Expression<Lvalue>::Ptr();
 					}},
 				*typeId);
@@ -1347,6 +1362,11 @@ namespace sharpsenLang
 				[&](const InitListType &ilt)
 				{
 					//cannot happen
+					return Expression<Lvalue>::Ptr();
+				},
+				[&](const ClassType &ct)
+				{
+					//todo
 					return Expression<Lvalue>::Ptr();
 				}},
 			*typeId);

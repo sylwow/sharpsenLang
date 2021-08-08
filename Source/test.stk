@@ -54,3 +54,12 @@ public function void main() {
 function number mm() {
 	return 9;
 }
+
+class myClass {
+	number field;
+
+	function void increment() {
+		number g = 10;
+		g++;
+	}
+}

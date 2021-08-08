@@ -85,6 +85,8 @@ namespace sharpsenLang
 			}
 			return false;
 		}
+		case 5:
+			return std::get<5>(t1).fullName < std::get<5>(t2).fullName;
 		}
 
 		return false;
@@ -92,6 +94,11 @@ namespace sharpsenLang
 
 	TypeRegistry::TypeRegistry()
 	{
+	}
+
+	bool TypeRegistry::isRegistered(const Type &t)
+	{
+		return _types.contains(t);
 	}
 
 	TypeHandle TypeRegistry::getHandle(const Type &t)
@@ -182,6 +189,10 @@ namespace std
 					}
 					ret += "}";
 					return ret;
+				},
+				[](const ClassType &ct)
+				{
+					return ct.fullName;
 				}},
 			*t);
 	}

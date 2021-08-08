@@ -79,3 +79,30 @@ TEST_F(TypeRegistryTest, CheckFailFunction)
     FunctionType funct2{ tr.getNumberHandle(), {{tr.getNumberHandle(), false}, {tr.getNumberHandle(), true}} };
     EXPECT_NE(tr.getHandle(funct2), funcType);
 }
+
+TEST_F(TypeRegistryTest, CheckClass)
+{
+    ClassType myClass { "myClass", "namespace.myClass", {tr.getNumberHandle()}};
+
+    auto myClassType = tr.getHandle(myClass);
+
+    EXPECT_EQ(tr.getHandle(myClass), myClassType);
+}
+
+TEST_F(TypeRegistryTest, CheckFailClass)
+{
+    ClassType myClass { "myClass", "namespace.myClass", {tr.getNumberHandle()}};
+
+    auto myClassType = tr.getHandle(myClass);
+
+    ClassType myClass2 { "myClass2", "namespace.myClass2", {tr.getNumberHandle()}};
+
+    EXPECT_NE(tr.getHandle(myClass2), myClassType);
+}
+
+TEST_F(TypeRegistryTest, CheckNonRegisteredClass)
+{
+    ClassType myClass { "myClass", "namespace.myClass", {tr.getNumberHandle()}};
+
+    EXPECT_FALSE(tr.isRegistered(myClass));
+}

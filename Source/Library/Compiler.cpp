@@ -7,6 +7,7 @@
 #include "RuntimeContext.hpp"
 #include "Helpers.hpp"
 #include "PushBackStream.hpp"
+#include "IncompleteClass.hpp"
 
 namespace sharpsenLang
 {
@@ -631,6 +632,7 @@ namespace sharpsenLang
 		std::vector<Expression<Lvalue>::Ptr> initializers;
 
 		std::vector<IncompleteFunction> incompleteFunctions;
+		std::vector<IncompleteClass> incompleteClasses;
 		std::unordered_map<std::string, size_t> publicFunctions;
 
 		while (it)
@@ -678,6 +680,14 @@ namespace sharpsenLang
 				}
 				break;
 			}
+			case ReservedToken::KwClass:
+			{
+				size_t lineNumber = it->getLineNumber();
+				size_t charIndex = it->getCharIndex();
+				incompleteClasses.emplace_back(ctx, it);
+
+				break;
+			}
 			default:
 				for (Expression<Lvalue>::Ptr &expr : compileVariableDeclaration(ctx, it))
 				{
@@ -708,6 +718,11 @@ namespace sharpsenLang
 		for (IncompleteFunction &f : incompleteFunctions)
 		{
 			functions.emplace_back(f.compile(ctx));
+		}
+
+		for (IncompleteClass &c : incompleteClasses)
+		{
+			c.compile(ctx);
 		}
 
 		return RuntimeContext(std::move(initializers), std::move(functions), std::move(publicFunctions));

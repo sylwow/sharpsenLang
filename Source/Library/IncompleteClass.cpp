@@ -39,6 +39,7 @@ namespace sharpsenLang
 			}
 
 			std::string name = getDeclarationName(ctx, it);
+			return {typeId, name};
 		}
 
 	}
@@ -49,7 +50,7 @@ namespace sharpsenLang
 
 		parseTokenValue(ctx, it, ReservedToken::KwClass);
 
-		ClassType ft;
+		ClassType ct;
 		ret.name = parseDeclarationName(ctx, it);
 
 		{
@@ -91,7 +92,7 @@ namespace sharpsenLang
 			++it;
 		}
 
-		//ret.typeId = ctx.getHandle(ft);
+		ret.typeId = ctx.getHandle(ct);
 
 		return ret;
 	}

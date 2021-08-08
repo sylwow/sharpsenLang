@@ -19,7 +19,7 @@ namespace sharpsenLang
 	struct InitListType;
 	struct ClassType;
 
-	using Type = std::variant<SimpleType, ArrayType, FunctionType, TupleType, InitListType>;
+	using Type = std::variant<SimpleType, ArrayType, FunctionType, TupleType, InitListType, ClassType>;
 	using TypeHandle = const Type *;
 
 	struct ArrayType
@@ -48,7 +48,10 @@ namespace sharpsenLang
 		std::vector<TypeHandle> innerTypeId;
 	};
 
-	struct ClassType {
+	struct ClassType
+	{
+		std::string name;
+		std::string fullName;
 		std::vector<TypeHandle> properties;
 		std::vector<TypeHandle> methods;
 	};
@@ -70,6 +73,8 @@ namespace sharpsenLang
 		TypeRegistry();
 
 		TypeHandle getHandle(const Type &t);
+
+		bool isRegistered(const Type &t);
 
 		static TypeHandle getVoidHandle()
 		{
