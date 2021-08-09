@@ -35,7 +35,7 @@ namespace sharpsenLang
 			}
 		};
 
-		bool isTypename(const CompilerContext &, const TokensIterator &it)
+		bool isTypename(const CompilerContext &ctx, const TokensIterator &it)
 		{
 			return std::visit(
 				overloaded{
@@ -51,6 +51,10 @@ namespace sharpsenLang
 						default:
 							return false;
 						}
+					},
+					[&ctx](const Identifier &t) -> bool
+					{
+						return ctx.getRegisteredClass(t.name);
 					},
 					[](const TokenValue &)
 					{
@@ -419,7 +423,7 @@ namespace sharpsenLang
 			}
 		}
 
-		std::vector<StatementPtr> compile_block_contents(CompilerContext &ctx, TokensIterator &it, PossibleFlow pf)
+		std::vector<StatementPtr> compileBlockContents(CompilerContext &ctx, TokensIterator &it, PossibleFlow pf)
 		{
 			std::vector<StatementPtr> ret;
 
@@ -445,7 +449,7 @@ namespace sharpsenLang
 		StatementPtr compileBlockStatement(CompilerContext &ctx, TokensIterator &it, PossibleFlow pf)
 		{
 			auto _ = ctx.scope();
-			std::vector<StatementPtr> block = compile_block_contents(ctx, it, pf);
+			std::vector<StatementPtr> block = compileBlockContents(ctx, it, pf);
 			return createBlockStatement(std::move(block));
 		}
 	}
@@ -481,44 +485,58 @@ namespace sharpsenLang
 
 	TypeHandle parseType(CompilerContext &ctx, TokensIterator &it)
 	{
-		if (!it->isReservedToken())
-		{
-			throw unexpectedSyntax(it);
-		}
-
 		TypeHandle t = nullptr;
 
-		switch (it->getReservedToken())
+		if (it->isReservedToken())
 		{
-		case ReservedToken::KwVoid:
-			t = ctx.getHandle(SimpleType::Void);
-			++it;
-			break;
-		case ReservedToken::KwNumber:
-			t = ctx.getHandle(SimpleType::Number);
-			++it;
-			break;
-		case ReservedToken::KwString:
-			t = ctx.getHandle(SimpleType::String);
-			++it;
-			break;
-		case ReservedToken::OpenSquare:
-		{
-			TupleType tt;
-			++it;
-			while (!it->hasValue(ReservedToken::CloseSquare))
+			switch (it->getReservedToken())
 			{
-				if (!tt.innerTypeId.empty())
+			case ReservedToken::KwVoid:
+				t = ctx.getHandle(SimpleType::Void);
+				++it;
+				break;
+			case ReservedToken::KwNumber:
+				t = ctx.getHandle(SimpleType::Number);
+				++it;
+				break;
+			case ReservedToken::KwString:
+				t = ctx.getHandle(SimpleType::String);
+				++it;
+				break;
+			case ReservedToken::OpenSquare:
+			{
+				TupleType tt;
+				++it;
+				while (!it->hasValue(ReservedToken::CloseSquare))
 				{
-					parseTokenValue(ctx, it, ReservedToken::Comma);
+					if (!tt.innerTypeId.empty())
+					{
+						parseTokenValue(ctx, it, ReservedToken::Comma);
+					}
+					tt.innerTypeId.push_back(parseType(ctx, it));
 				}
-				tt.innerTypeId.push_back(parseType(ctx, it));
+				++it;
+				t = ctx.getHandle(std::move(tt));
 			}
-			++it;
-			t = ctx.getHandle(std::move(tt));
+			break;
+			default:
+				throw unexpectedSyntax(it);
+			}
 		}
-		break;
-		default:
+		else if (it->isIdentifier())
+		{
+			if (auto classType = ctx.getRegisteredClass(it->getIdentifier().name))
+			{
+				t = classType;
+				++it;
+			}
+			else
+			{
+				throw unexpectedSyntax(it);
+			}
+		}
+		else
+		{
 			throw unexpectedSyntax(it);
 		}
 
@@ -566,7 +584,7 @@ namespace sharpsenLang
 
 	SharedStatementPtr compileFunctionBlock(CompilerContext &ctx, TokensIterator &it, TypeHandle returnTypeId)
 	{
-		std::vector<StatementPtr> block = compile_block_contents(ctx, it, PossibleFlow::inFunction(returnTypeId));
+		std::vector<StatementPtr> block = compileBlockContents(ctx, it, PossibleFlow::inFunction(returnTypeId));
 		if (returnTypeId != TypeRegistry::getVoidHandle())
 		{
 			block.emplace_back(createReturnStatement(buildDefaultInitialization(returnTypeId)));
@@ -707,6 +725,7 @@ namespace sharpsenLang
 		}
 
 		std::vector<Function> functions;
+		std::vector<Class> classes;
 
 		functions.reserve(externalFunctions.size() + incompleteFunctions.size());
 
@@ -722,9 +741,9 @@ namespace sharpsenLang
 
 		for (IncompleteClass &c : incompleteClasses)
 		{
-			c.compile(ctx);
+			classes.emplace_back(c.compile(ctx));
 		}
 
-		return RuntimeContext(std::move(initializers), std::move(functions), std::move(publicFunctions));
+		return RuntimeContext(std::move(initializers), std::move(functions), std::move(classes), std::move(publicFunctions));
 	}
 }

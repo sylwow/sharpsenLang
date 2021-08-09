@@ -56,6 +56,13 @@ namespace sharpsenLang
 		std::vector<TypeHandle> methods;
 	};
 
+	struct UndefinedInfo
+	{
+		std::string type;
+		int lineNumber;
+		int charIndex;
+	};
+
 	class TypeRegistry
 	{
 	private:
@@ -63,7 +70,16 @@ namespace sharpsenLang
 		{
 			bool operator()(const Type &t1, const Type &t2) const;
 		};
+
+		struct UndefinedLess
+		{
+			bool operator()(const UndefinedInfo &t1, const UndefinedInfo &t2) const
+			{
+				return t1.type < t2.type;
+			}
+		};
 		std::set<Type, TypesLess> _types;
+		std::set<UndefinedInfo, UndefinedLess> _undefinedTypes;
 
 		static Type voidType;
 		static Type numberType;
@@ -74,7 +90,11 @@ namespace sharpsenLang
 
 		TypeHandle getHandle(const Type &t);
 
-		bool isRegistered(const Type &t);
+		TypeHandle getRegisteredClassHandle(const std::string &name) const;
+
+		TypeHandle checkClassRegistration(const std::string &name, int lineNumber, int charIndex);
+
+		std::vector<UndefinedInfo> getUndefinedTypes() const;
 
 		static TypeHandle getVoidHandle()
 		{

@@ -103,7 +103,6 @@ namespace sharpsenLang
 		ParamLookup *_params;
 		std::unique_ptr<LocalVariableLookup> _locals;
 		TypeRegistry _types;
-
 		class ScopeRaii
 		{
 		private:
@@ -132,6 +131,8 @@ namespace sharpsenLang
 		CompilerContext();
 
 		TypeHandle getHandle(const Type &t);
+
+		TypeHandle getRegisteredClass(const std::string &className) const;
 
 		const IdentifierInfo *find(const std::string &name) const;
 

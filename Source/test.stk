@@ -49,6 +49,8 @@ public function void main() {
 	trace(toString(arr));
 	
 	trace(mm());
+	
+	myClass x;
 }
 
 function number mm() {

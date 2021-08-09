@@ -17,6 +17,10 @@ namespace sharpsenLang
 		std::string name;
 		TypeHandle typeId;
 		std::vector<std::string> params;
+		TypeHandle parentTypeId = nullptr;
+		bool isMethod() {
+			return parentTypeId;
+		}
 	};
 
 	FunctionDeclaration parseFunctionDeclaration(CompilerContext &ctx, TokensIterator &it);
@@ -33,6 +37,8 @@ namespace sharpsenLang
 		IncompleteFunction(CompilerContext &ctx, TokensIterator &it, ClassType *parentClass = nullptr);
 
 		IncompleteFunction(IncompleteFunction &&orig) noexcept;
+
+		void updateParentClass(TypeHandle parentClass);
 
 		const FunctionDeclaration &getDecl() const;
 

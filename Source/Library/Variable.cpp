@@ -10,6 +10,8 @@ namespace sharpsenLang
 		}
 	}
 
+
+
 	template <typename T>
 	VariableImpl<T>::VariableImpl(T value) : value(std::move(value))
 	{
@@ -31,6 +33,7 @@ namespace sharpsenLang
 	template class VariableImpl<String>;
 	template class VariableImpl<Function>;
 	template class VariableImpl<Array>;
+	template class VariableImpl<Class>;
 
 	Number cloneVariableValue(Number value)
 	{
@@ -53,6 +56,16 @@ namespace sharpsenLang
 		for (const VariablePtr &v : value)
 		{
 			ret.push_back(v->clone());
+		}
+		return ret;
+	}
+
+	Class cloneVariableValue(const Class &value)
+	{
+		Class ret;
+		for (const VariablePtr &v : value.properties)
+		{
+			ret.properties.push_back(v->clone());
 		}
 		return ret;
 	}
@@ -91,6 +104,11 @@ namespace sharpsenLang
 		}
 		ret += "]";
 		return fromStdString(std::move(ret));
+	}
+
+	String convertToString(const Class &value)
+	{
+		return fromStdString("CLASS");
 	}
 
 	String convertToString(const Lvalue &var)

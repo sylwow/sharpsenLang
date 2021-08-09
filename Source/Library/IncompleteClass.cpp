@@ -56,6 +56,7 @@ namespace sharpsenLang
 		{
 			parseTokenValue(ctx, it, ReservedToken::OpenCurly);
 
+			ct.fullName = ret.name;
 			while (!it->hasValue(ReservedToken::CloseCurly))
 			{
 				if (!std::holds_alternative<ReservedToken>(it->getValue()))
@@ -77,22 +78,27 @@ namespace sharpsenLang
 				{
 					size_t lineNumber = it->getLineNumber();
 					size_t charIndex = it->getCharIndex();
-					const IncompleteFunction &f = _incompleteMethods.emplace_back(ctx, it);
-					ret.methods.push_back(f.getDecl());
-
+					const IncompleteFunction &f = _incompleteMethods.emplace_back(ctx, it, &ct);
+					ct.methods.push_back(f.getDecl().typeId);
 					break;
 				}
 				default:
 					auto property = GetVariableDefinition(ctx, it);
 					ret.properties.emplace_back(property.second, property.first);
+					ct.properties.push_back(property.first);
 					parseTokenValue(ctx, it, ReservedToken::Semicolon);
 					break;
 				}
 			}
+
+			ret.typeId = ctx.getHandle(ct);
+			for (auto &incompletedMethod : _incompleteMethods)
+			{
+				incompletedMethod.updateParentClass(ret.typeId);
+				ret.methods.push_back(incompletedMethod.getDecl());
+			}
 			++it;
 		}
-
-		ret.typeId = ctx.getHandle(ct);
 
 		return ret;
 	}
@@ -119,11 +125,14 @@ namespace sharpsenLang
 			_decl.name,
 			_decl.name,
 		};
-		for(auto& incompleted: _incompleteMethods) {
-			cl.methods.insert({incompleted.getDecl().name, incompleted.compile(ctx)});
+
+		for (auto &method : _incompleteMethods)
+		{
+			method.compile(ctx);
 		}
-		for(auto& property: _decl.properties) {
-			cl.properties.insert({property.name, nullptr});
+
+		for (auto &property : _decl.properties)
+		{
 		}
 		return cl;
 	}

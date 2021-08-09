@@ -114,6 +114,11 @@ namespace sharpsenLang
 		return _types.getHandle(t);
 	}
 
+	const Type *CompilerContext::getRegisteredClass(const std::string &className) const
+	{
+		return _types.getRegisteredClassHandle(className);
+	}
+
 	const IdentifierInfo *CompilerContext::find(const std::string &name) const
 	{
 		if (_locals)

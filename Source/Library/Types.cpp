@@ -96,9 +96,37 @@ namespace sharpsenLang
 	{
 	}
 
-	bool TypeRegistry::isRegistered(const Type &t)
+	TypeHandle TypeRegistry::getRegisteredClassHandle(const std::string &name) const
 	{
-		return _types.contains(t);
+		ClassType ct{name, name};
+		auto search = _types.find(ct);
+		return search != _types.end() ? &(*search) : nullptr;
+	}
+
+	TypeHandle TypeRegistry::checkClassRegistration(const std::string &name, int lineNumber, int charIndex)
+	{
+		if (auto handle = getRegisteredClassHandle(name))
+		{
+			return handle;
+		}
+		else
+		{
+			_undefinedTypes.emplace(UndefinedInfo{name, lineNumber, charIndex});
+			return nullptr;
+		}
+	}
+
+	std::vector<UndefinedInfo> TypeRegistry::getUndefinedTypes() const
+	{
+		std::vector<UndefinedInfo> undefinedTypes;
+		for (auto &undefinedType : _undefinedTypes)
+		{
+			if (!getRegisteredClassHandle(undefinedType.type))
+			{
+				undefinedTypes.push_back(undefinedType);
+			}
+		}
+		return undefinedTypes;
 	}
 
 	TypeHandle TypeRegistry::getHandle(const Type &t)

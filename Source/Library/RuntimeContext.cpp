@@ -6,8 +6,10 @@ namespace sharpsenLang
 	RuntimeContext::RuntimeContext(
 		std::vector<Expression<Lvalue>::Ptr> initializers,
 		std::vector<Function> functions,
+		std::vector<Class> classes,
 		std::unordered_map<std::string, size_t> publicFunctions)
 		: _functions(std::move(functions)),
+		  _classes(std::move(classes)),
 		  _publicFunctions(std::move(publicFunctions)),
 		  _initializers(std::move(initializers)),
 		  _retvalIdx(0)

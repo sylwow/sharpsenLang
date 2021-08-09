@@ -24,11 +24,12 @@ namespace sharpsenLang
 	using Function = std::function<void(RuntimeContext &)>;
 	using Tuple = Array;
 	using InitializerList = Array;
-	struct Class {
+
+	struct Class
+	{
 		std::string name;
 		std::string fullName;
-		std::unordered_map<std::string, VariablePtr> properties;
-		std::unordered_map<std::string, Function> methods;
+		std::vector<VariablePtr> properties;
 	};
 
 	using Lvalue = VariablePtr;
@@ -82,6 +83,7 @@ namespace sharpsenLang
 	String cloneVariableValue(const String &value);
 	Function cloneVariableValue(const Function &value);
 	Array cloneVariableValue(const Array &value);
+	Class cloneVariableValue(const Class &value);
 
 	template <class T>
 	T cloneVariableValue(const std::shared_ptr<VariableImpl<T>> &v)
@@ -94,4 +96,5 @@ namespace sharpsenLang
 	String convertToString(const Function &value);
 	String convertToString(const Array &value);
 	String convertToString(const Lvalue &var);
+	String convertToString(const Class &var);
 }

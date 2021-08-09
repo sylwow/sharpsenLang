@@ -16,6 +16,7 @@ namespace sharpsenLang
 	{
 	private:
 		std::vector<Function> _functions;
+		std::vector<Class> _classes;
 		std::unordered_map<std::string, size_t> _publicFunctions;
 		std::vector<Expression<Lvalue>::Ptr> _initializers;
 		std::vector<VariablePtr> _globals;
@@ -37,6 +38,7 @@ namespace sharpsenLang
 		RuntimeContext(
 			std::vector<Expression<Lvalue>::Ptr> initializers,
 			std::vector<Function> functions,
+			std::vector<Class> classes,
 			std::unordered_map<std::string, size_t> publicFunctions);
 
 		void initialize();
