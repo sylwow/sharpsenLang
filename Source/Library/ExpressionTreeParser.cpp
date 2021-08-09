@@ -26,7 +26,8 @@ namespace sharpsenLang
 			LogicalAnd,
 			LogicalOr,
 			Assignment,
-			Comma
+			Comma,
+			Dot,
 		};
 
 		enum struct OperatorAssociativity
@@ -129,6 +130,9 @@ namespace sharpsenLang
 					break;
 				case NodeOperation::Comma:
 					precedence = OperatorPrecedence::Comma;
+					break;
+				case NodeOperation::Dot:
+					precedence = OperatorPrecedence::Dot;
 					break;
 				}
 
@@ -257,6 +261,8 @@ namespace sharpsenLang
 				return OperatorInfo(NodeOperation::Ternary, lineNumber, charIndex);
 			case ReservedToken::Comma:
 				return OperatorInfo(NodeOperation::Comma, lineNumber, charIndex);
+			case ReservedToken::Dot:
+				return OperatorInfo(NodeOperation::Dot, lineNumber, charIndex);
 			case ReservedToken::OpenRound:
 				return OperatorInfo(NodeOperation::Call, lineNumber, charIndex);
 			case ReservedToken::OpenSquare:

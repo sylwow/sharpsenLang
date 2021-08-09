@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <variant>
+#include <unordered_map>
 #include <set>
 #include <ostream>
 
@@ -50,10 +51,7 @@ namespace sharpsenLang
 
 	struct ClassType
 	{
-		std::string name;
-		std::string fullName;
 		std::vector<TypeHandle> properties;
-		std::vector<TypeHandle> methods;
 	};
 
 	struct UndefinedInfo
@@ -89,10 +87,6 @@ namespace sharpsenLang
 		TypeRegistry();
 
 		TypeHandle getHandle(const Type &t);
-
-		TypeHandle getRegisteredClassHandle(const std::string &name) const;
-
-		TypeHandle checkClassRegistration(const std::string &name, int lineNumber, int charIndex);
 
 		std::vector<UndefinedInfo> getUndefinedTypes() const;
 

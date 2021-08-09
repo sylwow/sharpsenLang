@@ -24,6 +24,56 @@ namespace sharpsenLang
 		return _scope;
 	}
 
+	ClassInfo::ClassInfo(TypeHandle typeId, size_t index, IdentifierScope scope, std::vector<std::string> properties)
+		: IdentifierInfo(typeId, index, scope)
+	{
+		size_t i = 0;
+		for (auto &property : properties)
+		{
+			_propertiesMap.insert({property, i++});
+		}
+	}
+
+	const size_t *ClassInfo::getPropertyIndex(const std::string &name) const
+	{
+		if (auto it = _propertiesMap.find(name); it != _propertiesMap.end())
+		{
+			return &it->second;
+		}
+		else
+		{
+			return nullptr;
+		}
+	}
+
+	const ClassInfo *ClassLookup::createClass(std::string name,
+											  TypeHandle typeId, std::vector<std::string> properties)
+	{
+		return &_identifiers.emplace(std::move(name), ClassInfo(typeId, identifiersSize(), IdentifierScope::Class, std::move(properties))).first->second;
+	}
+
+	size_t ClassLookup::identifiersSize() const
+	{
+		return _identifiers.size();
+	}
+
+	const ClassInfo *ClassLookup::find(const std::string &name) const
+	{
+		if (auto it = _identifiers.find(name); it != _identifiers.end())
+		{
+			return &it->second;
+		}
+		else
+		{
+			return nullptr;
+		}
+	}
+
+	bool ClassLookup::canDeclare(const std::string &name) const
+	{
+		return _identifiers.find(name) == _identifiers.end();
+	}
+
 	const IdentifierInfo *IdentifierLookup::insertIdentifier(std::string name, TypeHandle typeId, size_t index, IdentifierScope scope)
 	{
 		return &_identifiers.emplace(std::move(name), IdentifierInfo(typeId, index, scope)).first->second;
@@ -114,11 +164,6 @@ namespace sharpsenLang
 		return _types.getHandle(t);
 	}
 
-	const Type *CompilerContext::getRegisteredClass(const std::string &className) const
-	{
-		return _types.getRegisteredClassHandle(className);
-	}
-
 	const IdentifierInfo *CompilerContext::find(const std::string &name) const
 	{
 		if (_locals)
@@ -133,6 +178,11 @@ namespace sharpsenLang
 			return ret;
 		}
 		return _globals.find(name);
+	}
+
+	const IdentifierInfo *CompilerContext::findClass(const std::string &name) const
+	{
+		return _classes.find(name);
 	}
 
 	const IdentifierInfo *CompilerContext::createIdentifier(std::string name, TypeHandle typeId)
@@ -155,6 +205,11 @@ namespace sharpsenLang
 	const IdentifierInfo *CompilerContext::createFunction(std::string name, TypeHandle typeId)
 	{
 		return _functions.createIdentifier(name, typeId);
+	}
+
+	const IdentifierInfo *CompilerContext::createClass(std::string name, TypeHandle typeId, std::vector<std::string> properties)
+	{
+		return _classes.createClass(name, typeId, std::move(properties));
 	}
 
 	void CompilerContext::enterScope()
@@ -181,7 +236,7 @@ namespace sharpsenLang
 
 	bool CompilerContext::canDeclare(const std::string &name) const
 	{
-		return _locals ? _locals->canDeclare(name) : (_globals.canDeclare(name) && _functions.canDeclare(name));
+		return _locals ? _locals->canDeclare(name) : (_globals.canDeclare(name) && _functions.canDeclare(name) && _classes.canDeclare(name));
 	}
 
 	CompilerContext::ScopeRaii CompilerContext::scope()

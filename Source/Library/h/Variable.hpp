@@ -27,8 +27,6 @@ namespace sharpsenLang
 
 	struct Class
 	{
-		std::string name;
-		std::string fullName;
 		std::vector<VariablePtr> properties;
 	};
 

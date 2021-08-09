@@ -14,17 +14,11 @@ namespace sharpsenLang
 	class TokensIterator;
 	using Function = std::function<void(RuntimeContext &)>;
 
-	struct PropertyDeclaration
-	{
-		std::string name;
-		TypeHandle typeId;
-	};
-
 	struct ClassDeclaration
 	{
 		std::string name;
 		TypeHandle typeId;
-		std::vector<PropertyDeclaration> properties;
+		std::vector<std::string> properties;
 		std::vector<FunctionDeclaration> methods;
 	};
 

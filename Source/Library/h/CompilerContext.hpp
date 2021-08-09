@@ -13,6 +13,7 @@ namespace sharpsenLang
 		GlobalVariable,
 		LocalVariable,
 		Function,
+		Class,
 	};
 
 	class IdentifierInfo
@@ -30,6 +31,17 @@ namespace sharpsenLang
 		size_t index() const;
 
 		IdentifierScope getScope() const;
+	};
+
+	class ClassInfo : public IdentifierInfo
+	{
+	private:
+		std::unordered_map<std::string, size_t> _propertiesMap;
+
+	public:
+		ClassInfo(TypeHandle typeId, size_t index, IdentifierScope scope, std::vector<std::string> properties);
+
+		const size_t *getPropertyIndex(const std::string &name) const;
 	};
 
 	class IdentifierLookup
@@ -95,10 +107,26 @@ namespace sharpsenLang
 											   TypeHandle typeId) override;
 	};
 
+	class ClassLookup
+	{
+	private:
+		std::unordered_map<std::string, ClassInfo> _identifiers;
+
+		size_t identifiersSize() const;
+	public:
+		const ClassInfo *createClass(std::string name,
+										  TypeHandle typeId, std::vector<std::string> properties);
+
+		const ClassInfo *find(const std::string &name) const;
+
+		bool canDeclare(const std::string &name) const;
+	};
+
 	class CompilerContext
 	{
 	private:
 		FunctionLookup _functions;
+		ClassLookup _classes;
 		GlobalVariableLookup _globals;
 		ParamLookup *_params;
 		std::unique_ptr<LocalVariableLookup> _locals;
@@ -132,15 +160,17 @@ namespace sharpsenLang
 
 		TypeHandle getHandle(const Type &t);
 
-		TypeHandle getRegisteredClass(const std::string &className) const;
-
 		const IdentifierInfo *find(const std::string &name) const;
+
+		const IdentifierInfo *findClass(const std::string &name) const;
 
 		const IdentifierInfo *createIdentifier(std::string name, TypeHandle typeId);
 
 		const IdentifierInfo *createParam(std::string name, TypeHandle typeId);
 
 		const IdentifierInfo *createFunction(std::string name, TypeHandle typeId);
+
+		const IdentifierInfo *createClass(std::string name, TypeHandle typeId, std::vector<std::string> properties);
 
 		bool canDeclare(const std::string &name) const;
 

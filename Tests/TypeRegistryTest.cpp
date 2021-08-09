@@ -78,7 +78,7 @@ TEST_F(TypeRegistryTest, CheckFailFunction)
     FunctionType funct2{tr.getNumberHandle(), {{tr.getNumberHandle(), false}, {tr.getNumberHandle(), true}}};
     EXPECT_NE(tr.getHandle(funct2), funcType);
 }
-
+/*
 TEST_F(TypeRegistryTest, CheckClass)
 {
     ClassType myClass{"myClass", "namespace.myClass", {tr.getNumberHandle()}};
@@ -158,3 +158,4 @@ TEST_F(TypeRegistryTest, CheckClassNonRegistrationMultiple)
     EXPECT_EQ(ui.lineNumber, 1);
     EXPECT_EQ(ui.charIndex, 2);
 }
+*/

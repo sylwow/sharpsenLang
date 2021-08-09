@@ -54,7 +54,7 @@ namespace sharpsenLang
 					},
 					[&ctx](const Identifier &t) -> bool
 					{
-						return ctx.getRegisteredClass(t.name);
+						return !ctx.canDeclare(t.name);
 					},
 					[](const TokenValue &)
 					{
@@ -525,9 +525,9 @@ namespace sharpsenLang
 		}
 		else if (it->isIdentifier())
 		{
-			if (auto classType = ctx.getRegisteredClass(it->getIdentifier().name))
+			if (auto classType = ctx.findClass(it->getIdentifier().name))
 			{
-				t = classType;
+				t = classType->typeId();
 				++it;
 			}
 			else

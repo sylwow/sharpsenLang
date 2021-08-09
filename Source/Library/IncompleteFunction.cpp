@@ -54,9 +54,8 @@ namespace sharpsenLang
 		return ret;
 	}
 
-	IncompleteFunction::IncompleteFunction(CompilerContext &ctx, TokensIterator &it, ClassType *parentClass)
+	IncompleteFunction::IncompleteFunction(CompilerContext &ctx, TokensIterator &it, std::string parentClass)
 	{
-		this->parentClass = parentClass;
 		_decl = parseFunctionDeclaration(ctx, it);
 
 		_tokens.push_back(*it);
@@ -86,9 +85,9 @@ namespace sharpsenLang
 			throw unexpectedSyntaxError("end of file", it->getLineNumber(), it->getCharIndex());
 		}
 
-		if (isMethod())
+		if (!parentClass.empty())
 		{
-			_decl.name = parentClass->fullName + "::" + _decl.name;
+			_decl.name = parentClass + "::" + _decl.name;
 		}
 		ctx.createFunction(_decl.name, _decl.typeId);
 	}
@@ -114,10 +113,6 @@ namespace sharpsenLang
 
 		const FunctionType *ft = std::get_if<FunctionType>(_decl.typeId);
 
-		if (isMethod())
-		{
-			ctx.createParam("this", _decl.parentTypeId);
-		}
 		for (int i = 0; i < int(_decl.params.size()); ++i)
 		{
 			ctx.createParam(std::move(_decl.params[i]), ft->paramTypeId[i].typeId);

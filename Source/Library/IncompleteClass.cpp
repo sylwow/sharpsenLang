@@ -50,13 +50,12 @@ namespace sharpsenLang
 
 		parseTokenValue(ctx, it, ReservedToken::KwClass);
 
-		ClassType ct;
+		ClassType ct{};
 		ret.name = parseDeclarationName(ctx, it);
 
 		{
 			parseTokenValue(ctx, it, ReservedToken::OpenCurly);
 
-			ct.fullName = ret.name;
 			while (!it->hasValue(ReservedToken::CloseCurly))
 			{
 				if (!std::holds_alternative<ReservedToken>(it->getValue()))
@@ -78,14 +77,13 @@ namespace sharpsenLang
 				{
 					size_t lineNumber = it->getLineNumber();
 					size_t charIndex = it->getCharIndex();
-					const IncompleteFunction &f = _incompleteMethods.emplace_back(ctx, it, &ct);
-					ct.methods.push_back(f.getDecl().typeId);
+					const IncompleteFunction &f = _incompleteMethods.emplace_back(ctx, it, ret.name);
 					break;
 				}
 				default:
 					auto property = GetVariableDefinition(ctx, it);
-					ret.properties.emplace_back(property.second, property.first);
-					ct.properties.push_back(property.first);
+					ret.properties.emplace_back(property.second);
+					ct.properties.emplace_back(property.first);
 					parseTokenValue(ctx, it, ReservedToken::Semicolon);
 					break;
 				}
@@ -106,7 +104,7 @@ namespace sharpsenLang
 	IncompleteClass::IncompleteClass(CompilerContext &ctx, TokensIterator &it)
 	{
 		_decl = parseClassDeclaration(ctx, it);
-		//ctx.createClass(_decl.name, _decl.typeId);
+		ctx.createClass(_decl.name, _decl.typeId, _decl.properties);
 	}
 
 	IncompleteClass::IncompleteClass(IncompleteClass &&orig) noexcept : _tokens(std::move(orig._tokens)),
@@ -121,10 +119,7 @@ namespace sharpsenLang
 
 	Class IncompleteClass::compile(CompilerContext &ctx)
 	{
-		Class cl{
-			_decl.name,
-			_decl.name,
-		};
+		Class cl;
 
 		for (auto &method : _incompleteMethods)
 		{

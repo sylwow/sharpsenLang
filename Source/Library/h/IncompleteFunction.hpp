@@ -28,13 +28,12 @@ namespace sharpsenLang
 	class IncompleteFunction
 	{
 	private:
-		ClassType *parentClass = nullptr;
 		FunctionDeclaration _decl;
 		size_t _index;
 		std::deque<Token> _tokens;
 
 	public:
-		IncompleteFunction(CompilerContext &ctx, TokensIterator &it, ClassType *parentClass = nullptr);
+		IncompleteFunction(CompilerContext &ctx, TokensIterator &it, std::string parentClass = "");
 
 		IncompleteFunction(IncompleteFunction &&orig) noexcept;
 
@@ -43,11 +42,5 @@ namespace sharpsenLang
 		const FunctionDeclaration &getDecl() const;
 
 		Function compile(CompilerContext &ctx);
-
-	private:
-		bool isMethod()
-		{
-			return parentClass != nullptr;
-		}
 	};
 }

@@ -86,7 +86,22 @@ namespace sharpsenLang
 			return false;
 		}
 		case 5:
-			return std::get<5>(t1).fullName < std::get<5>(t2).fullName;
+			const ClassType &ilt1 = std::get<5>(t1);
+			const ClassType &ilt2 = std::get<5>(t2);
+
+			if (ilt1.properties.size() != ilt2.properties.size())
+			{
+				return ilt1.properties.size() < ilt2.properties.size();
+			}
+
+			for (size_t i = 0; i < ilt1.properties.size(); ++i)
+			{
+				if (ilt1.properties[i] != ilt2.properties[i])
+				{
+					return ilt1.properties[i] < ilt2.properties[i];
+				}
+			}
+			return false;
 		}
 
 		return false;
@@ -94,39 +109,6 @@ namespace sharpsenLang
 
 	TypeRegistry::TypeRegistry()
 	{
-	}
-
-	TypeHandle TypeRegistry::getRegisteredClassHandle(const std::string &name) const
-	{
-		ClassType ct{name, name};
-		auto search = _types.find(ct);
-		return search != _types.end() ? &(*search) : nullptr;
-	}
-
-	TypeHandle TypeRegistry::checkClassRegistration(const std::string &name, int lineNumber, int charIndex)
-	{
-		if (auto handle = getRegisteredClassHandle(name))
-		{
-			return handle;
-		}
-		else
-		{
-			_undefinedTypes.emplace(UndefinedInfo{name, lineNumber, charIndex});
-			return nullptr;
-		}
-	}
-
-	std::vector<UndefinedInfo> TypeRegistry::getUndefinedTypes() const
-	{
-		std::vector<UndefinedInfo> undefinedTypes;
-		for (auto &undefinedType : _undefinedTypes)
-		{
-			if (!getRegisteredClassHandle(undefinedType.type))
-			{
-				undefinedTypes.push_back(undefinedType);
-			}
-		}
-		return undefinedTypes;
 	}
 
 	TypeHandle TypeRegistry::getHandle(const Type &t)
@@ -218,9 +200,9 @@ namespace std
 					ret += "}";
 					return ret;
 				},
-				[](const ClassType &ct)
+				[](const ClassType &ct) -> std::string
 				{
-					return ct.fullName;
+					return "CLASS";
 				}},
 			*t);
 	}

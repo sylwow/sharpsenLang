@@ -65,6 +65,8 @@ namespace sharpsenLang
 		Call,
 
 		Init,
+
+		Dot,
 	};
 
 	struct Node;

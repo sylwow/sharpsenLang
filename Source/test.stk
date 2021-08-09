@@ -51,6 +51,8 @@ public function void main() {
 	trace(mm());
 	
 	myClass x;
+
+	number m = x.field;
 }
 
 function number mm() {
