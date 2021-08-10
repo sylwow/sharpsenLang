@@ -52,8 +52,8 @@ namespace sharpsenLang
 	struct Property {
 		size_t index;
 		TypeHandle type;
-	}
-	
+	};
+
 	struct ClassType
 	{
 		std::string name;
@@ -95,6 +95,10 @@ namespace sharpsenLang
 		TypeHandle getHandle(const Type &t);
 
 		std::vector<UndefinedInfo> getUndefinedTypes() const;
+
+		const ClassType* getClassType(const std::string & ClassName) const;
+
+		const Property* getClassProperty(const ClassType* ct, std::string_view propertyName) const;
 
 		static TypeHandle getVoidHandle()
 		{

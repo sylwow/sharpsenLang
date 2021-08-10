@@ -27,7 +27,7 @@ namespace sharpsenLang
 			LogicalOr,
 			Assignment,
 			Comma,
-			Dot,
+			Get,
 		};
 
 		enum struct OperatorAssociativity
@@ -131,8 +131,8 @@ namespace sharpsenLang
 				case NodeOperation::Comma:
 					precedence = OperatorPrecedence::Comma;
 					break;
-				case NodeOperation::Dot:
-					precedence = OperatorPrecedence::Dot;
+				case NodeOperation::Get:
+					precedence = OperatorPrecedence::Get;
 					break;
 				}
 
@@ -261,8 +261,8 @@ namespace sharpsenLang
 				return OperatorInfo(NodeOperation::Ternary, lineNumber, charIndex);
 			case ReservedToken::Comma:
 				return OperatorInfo(NodeOperation::Comma, lineNumber, charIndex);
-			case ReservedToken::Dot:
-				return OperatorInfo(NodeOperation::Dot, lineNumber, charIndex);
+			case ReservedToken::Get:
+				return OperatorInfo(NodeOperation::Get, lineNumber, charIndex);
 			case ReservedToken::OpenRound:
 				return OperatorInfo(NodeOperation::Call, lineNumber, charIndex);
 			case ReservedToken::OpenSquare:
@@ -353,6 +353,25 @@ namespace sharpsenLang
 				{
 					OperatorInfo oi = getOperatorInfo(
 						it->getReservedToken(), expectedOperand, it->getLineNumber(), it->getCharIndex());
+
+					if (oi.operation == NodeOperation::Get)
+					{
+						++it;
+
+						if (!it->isIdentifier())
+						{
+							throw syntaxError("Expected class property or method name", it->getLineNumber(), it->getCharIndex());
+						}
+
+						operandStack.push(std::make_unique<Node>(
+											  context, it->getIdentifier(), std::vector<NodePtr>(), it->getLineNumber(), it->getCharIndex(), true));
+
+						operatorStack.push(oi);
+
+						popOneOperator(operatorStack, operandStack, context, it->getLineNumber(), it->getCharIndex());
+						expectedOperand = false;
+						continue;
+					}
 
 					if (oi.operation == NodeOperation::Call && expectedOperand)
 					{

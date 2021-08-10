@@ -54,7 +54,7 @@ namespace sharpsenLang
 					},
 					[&ctx](const Identifier &t) -> bool
 					{
-						return !ctx.canDeclare(t.name);
+						return ctx.findClass(t.name);
 					},
 					[](const TokenValue &)
 					{

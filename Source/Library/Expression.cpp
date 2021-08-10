@@ -549,6 +549,55 @@ namespace sharpsenLang
 			}
 		};
 
+		template <typename R, typename A, typename T>
+		class ClassMemberExpression : public Expression<R>
+		{
+		private:
+			typename Expression<A>::Ptr _expr;
+			size_t _idx;
+
+			static Class &value(A &arr)
+			{
+				if constexpr (std::is_same<Lclass, A>::value)
+				{
+					return arr->value;
+				}
+				else
+				{
+					static_assert(std::is_same<Class, A>::value);
+					return arr;
+				}
+			}
+
+			static auto toLvalueImpl(Lvalue v)
+			{
+				if constexpr (std::is_same<Lclass, A>::value)
+				{
+					return v->staticPointerDowncast<T>();
+				}
+				else
+				{
+					static_assert(std::is_same<Class, A>::value);
+					return std::static_pointer_cast<VariableImpl<T>>(v);
+				}
+			}
+
+		public:
+			ClassMemberExpression(typename Expression<A>::Ptr expr, size_t idx)
+				: _expr(std::move(expr)),
+				  _idx(idx)
+			{
+			}
+
+			R evaluate(RuntimeContext &context) const override
+			{
+				A tup = _expr->evaluate(context);
+
+				return convert<R>(
+					toLvalueImpl(value(tup).properties[_idx]));
+			}
+		};
+
 		template <typename R, typename T>
 		class CallExpression : public Expression<R>
 		{
@@ -861,6 +910,26 @@ namespace sharpsenLang
 		}                                                                                      \
 	}
 
+#define CHECK_GET_OPERATION(T, A)                                                                           \
+	case NodeOperation::Get:                                                                                \
+	{                                                                                                       \
+		const ClassType *ct = std::get_if<ClassType>(np->getChildren()[0]->getTypeId());                    \
+		if (ct)                                                                                             \
+		{                                                                                                   \
+			const Property *property = context.getClassProperty(ct, np->getChildren()[1]->getIdentifier()); \
+                                                                                                            \
+			return ExpressionPtr(                                                                           \
+				std::make_unique<ClassMemberExpression<R, A, T>>(                                           \
+					ExpressionBuilder<A>::buildExpression(np->getChildren()[0], context),                   \
+					property->index));                                                                      \
+		}                                                                                                   \
+		else                                                                                                \
+		{                                                                                                   \
+			throw ExpressionBuilderError();                                                                 \
+			return ExpressionPtr();                                                                         \
+		}                                                                                                   \
+	}
+
 #define CHECK_CALL_OPERATION(T)                                                                              \
 	case NodeOperation::Call:                                                                                \
 	{                                                                                                        \
@@ -975,6 +1044,7 @@ namespace sharpsenLang
 					CHECK_BINARY_OPERATION(BsrAssign, Lnumber, Number);
 					CHECK_BINARY_OPERATION(Comma, Void, Lnumber);
 					CHECK_INDEX_OPERATION(Lnumber, Larray);
+					CHECK_GET_OPERATION(Lnumber, Lclass);
 					CHECK_TERNARY_OPERATION(Ternary, Number, Lnumber, Lnumber);
 				default:
 					throw ExpressionBuilderError();
@@ -1232,7 +1302,14 @@ namespace sharpsenLang
 						},
 						[&](const ClassType &ct)
 						{
-							RETURN_EXPRESSION_OF_TYPE(Class);
+							if (np->isLvalue())
+							{
+								RETURN_EXPRESSION_OF_TYPE(Lclass);
+							}
+							else
+							{
+								RETURN_EXPRESSION_OF_TYPE(Class);
+							}
 						}},
 					*np->getTypeId());
 			}
@@ -1417,13 +1494,12 @@ namespace sharpsenLang
 				},
 				[&](const ClassType &ct)
 				{
-					std::vector<Expression<Lvalue>::Ptr> exprs;
+					std::vector<Expression<Lvalue>::Ptr> exprs(ct.properties.size());
 
-					exprs.reserve(ct.properties.size());
-
-					for (TypeHandle it : ct.properties)
+					for (auto &it : ct.properties)
 					{
-						exprs.emplace_back(buildDefaultInitialization(it));
+						auto &property = it.second;
+						exprs.at(property.index) = buildDefaultInitialization(property.type);
 					}
 
 					return Expression<Lvalue>::Ptr(

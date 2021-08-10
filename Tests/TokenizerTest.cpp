@@ -127,7 +127,7 @@ TEST_F(TokenizerTest, MethodCall)
         {Identifier{"g"}},
         {ReservedToken::Assign},
         {Identifier{"instance"}},
-        {ReservedToken::Dot},
+        {ReservedToken::Get},
         {Identifier{"callMethod"}},
         {ReservedToken::OpenRound},
         {ReservedToken::CloseRound},

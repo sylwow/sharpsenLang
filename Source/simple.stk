@@ -1,0 +1,18 @@
+public function void main() {
+	myClass x;
+
+	x.field = 9;
+
+	number m = x.field;
+
+	trace(toString(m));
+}
+
+class myClass {
+	number field;
+
+	function void increment() {
+		number g = 10;
+		g++;
+	}
+}

@@ -67,7 +67,7 @@ namespace sharpsenLang
 		}
 	}
 
-	Node::Node(CompilerContext &context, NodeValue value, std::vector<NodePtr> children, size_t line_number, size_t char_index)
+	Node::Node(CompilerContext &context, NodeValue value, std::vector<NodePtr> children, size_t line_number, size_t char_index, bool canBeUndefined)
 		: _value(std::move(value)),
 		  _children(std::move(children)),
 		  _lineNumber(line_number),
@@ -98,7 +98,15 @@ namespace sharpsenLang
 					}
 					else
 					{
-						throw undeclaredError(value.name, _lineNumber, _charIndex);
+						if (canBeUndefined)
+						{
+							_typeId = nullptr;
+							_lvalue = false;
+						}
+						else
+						{
+							throw undeclaredError(value.name, _lineNumber, _charIndex);
+						}
 					}
 				},
 				[&](NodeOperation value)
@@ -304,6 +312,26 @@ namespace sharpsenLang
 						}
 						_typeId = context.getHandle(ilt);
 						_lvalue = false;
+						break;
+					}
+					case NodeOperation::Get:
+					{
+						if (const ClassType *ct = std::get_if<ClassType>(_children[0]->getTypeId()))
+						{
+							if (_children[1]->isIdentifier())
+							{
+								auto propName = _children[1]->getIdentifier();
+								if (auto property = context.getClassProperty(ct, propName))
+								{
+									_typeId = property->type;
+									_lvalue = true;
+									return;
+								}
+								throw semanticError("Property does not exists", _lineNumber, _charIndex);
+							}
+							throw semanticError("Expected object property or method name", _lineNumber, _charIndex);
+						}
+						throw semanticError("Expected class object", _lineNumber, _charIndex);
 						break;
 					}
 					}

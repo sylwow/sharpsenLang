@@ -86,22 +86,7 @@ namespace sharpsenLang
 			return false;
 		}
 		case 5:
-			const ClassType &ilt1 = std::get<5>(t1);
-			const ClassType &ilt2 = std::get<5>(t2);
-
-			if (ilt1.properties.size() != ilt2.properties.size())
-			{
-				return ilt1.properties.size() < ilt2.properties.size();
-			}
-
-			for (size_t i = 0; i < ilt1.properties.size(); ++i)
-			{
-				if (ilt1.properties[i] != ilt2.properties[i])
-				{
-					return ilt1.properties[i] < ilt2.properties[i];
-				}
-			}
-			return false;
+			return std::get<5>(t1).name < std::get<5>(t2).name;
 		}
 
 		return false;
@@ -109,6 +94,37 @@ namespace sharpsenLang
 
 	TypeRegistry::TypeRegistry()
 	{
+	}
+
+	const ClassType *TypeRegistry::getClassType(const std::string &className) const
+	{
+		ClassType ct{className};
+		if (auto foundType = _types.find(ct); foundType != _types.end())
+		{
+			return std::get_if<ClassType>(&(*foundType));
+		}
+		else
+		{
+			return nullptr;
+		}
+	}
+
+	const Property *TypeRegistry::getClassProperty(const ClassType *ct, std::string_view propertyName) const
+	{
+		if (!ct)
+		{
+			return nullptr;
+		}
+
+		std::string name{propertyName.data(), propertyName.size()};
+		if (auto it = ct->properties.find(name); it != ct->properties.end())
+		{
+			return &it->second;
+		}
+		else
+		{
+			return nullptr;
+		}
 	}
 
 	TypeHandle TypeRegistry::getHandle(const Type &t)
@@ -200,9 +216,13 @@ namespace std
 					ret += "}";
 					return ret;
 				},
-				[](const ClassType &ct) -> std::string
+				[](const ClassType &ct)
 				{
-					return "CLASS";
+					return std::string("Class: ") + ct.name;
+				},
+				[](const nullptr_t null) -> std::string
+				{
+					return "Null";
 				}},
 			*t);
 	}

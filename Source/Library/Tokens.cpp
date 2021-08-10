@@ -31,7 +31,7 @@ namespace sharpsenLang
 
 			{"=", ReservedToken::Assign},
 
-			{".", ReservedToken::Dot},
+			{".", ReservedToken::Get},
 
 			{"+=", ReservedToken::AddAssign},
 			{"-=", ReservedToken::SubAssign},

@@ -108,7 +108,7 @@ TEST_OPERATOR(">>", Shiftr)
 
 TEST_OPERATOR("=", Assign)
 
-TEST_OPERATOR(".", Dot)
+TEST_OPERATOR(".", Get)
 
 TEST_OPERATOR("+=", AddAssign)
 TEST_OPERATOR("-=", SubAssign)

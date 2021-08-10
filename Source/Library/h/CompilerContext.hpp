@@ -113,9 +113,10 @@ namespace sharpsenLang
 		std::unordered_map<std::string, ClassInfo> _identifiers;
 
 		size_t identifiersSize() const;
+
 	public:
 		const ClassInfo *createClass(std::string name,
-										  TypeHandle typeId, std::vector<std::string> properties);
+									 TypeHandle typeId, std::vector<std::string> properties);
 
 		const ClassInfo *find(const std::string &name) const;
 
@@ -163,6 +164,8 @@ namespace sharpsenLang
 		const IdentifierInfo *find(const std::string &name) const;
 
 		const IdentifierInfo *findClass(const std::string &name) const;
+
+		const Property *getClassProperty(const ClassType *ct, std::string_view propertyName) const;
 
 		const IdentifierInfo *createIdentifier(std::string name, TypeHandle typeId);
 

@@ -50,52 +50,51 @@ namespace sharpsenLang
 
 		parseTokenValue(ctx, it, ReservedToken::KwClass);
 
-		ClassType ct{};
-		ret.name = parseDeclarationName(ctx, it);
+		ClassType ct{parseDeclarationName(ctx, it)};
+		ret.name = ct.name;
 
+		size_t index = 0;
+		parseTokenValue(ctx, it, ReservedToken::OpenCurly);
+
+		while (!it->hasValue(ReservedToken::CloseCurly))
 		{
-			parseTokenValue(ctx, it, ReservedToken::OpenCurly);
-
-			while (!it->hasValue(ReservedToken::CloseCurly))
+			if (!std::holds_alternative<ReservedToken>(it->getValue()))
 			{
-				if (!std::holds_alternative<ReservedToken>(it->getValue()))
+				throw "todo error";
+			}
+
+			bool publicFunction = false;
+
+			switch (it->getReservedToken())
+			{
+			case ReservedToken::KwPublic:
+				publicFunction = true;
+				if (!(++it)->hasValue(ReservedToken::KwFunction))
 				{
 					throw "todo error";
 				}
-
-				bool publicFunction = false;
-
-				switch (it->getReservedToken())
-				{
-				case ReservedToken::KwPublic:
-					publicFunction = true;
-					if (!(++it)->hasValue(ReservedToken::KwFunction))
-					{
-						throw "todo error";
-					}
-				case ReservedToken::KwFunction:
-				{
-					size_t lineNumber = it->getLineNumber();
-					size_t charIndex = it->getCharIndex();
-					const IncompleteFunction &f = _incompleteMethods.emplace_back(ctx, it, ret.name);
-					break;
-				}
-				default:
-					auto property = GetVariableDefinition(ctx, it);
-					ret.properties.emplace_back(property.second);
-					ct.properties.emplace_back(property.first);
-					parseTokenValue(ctx, it, ReservedToken::Semicolon);
-					break;
-				}
-			}
-
-			ret.typeId = ctx.getHandle(ct);
-			for (auto &incompletedMethod : _incompleteMethods)
+			case ReservedToken::KwFunction:
 			{
-				incompletedMethod.updateParentClass(ret.typeId);
-				ret.methods.push_back(incompletedMethod.getDecl());
+				size_t lineNumber = it->getLineNumber();
+				size_t charIndex = it->getCharIndex();
+				const IncompleteFunction &f = _incompleteMethods.emplace_back(ctx, it, ret.name);
+				break;
 			}
-			++it;
+			default:
+				auto property = GetVariableDefinition(ctx, it);
+				ret.properties.emplace_back(property.second);
+				ct.properties[property.second] = {index++, property.first};
+				parseTokenValue(ctx, it, ReservedToken::Semicolon);
+				break;
+			}
+		}
+
+		++it;
+		ret.typeId = ctx.getHandle(ct);
+		for (auto &incompletedMethod : _incompleteMethods)
+		{
+			incompletedMethod.updateParentClass(ret.typeId);
+			ret.methods.push_back(incompletedMethod.getDecl());
 		}
 
 		return ret;

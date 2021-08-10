@@ -28,7 +28,7 @@ namespace sharpsenLang
 
 		Assign,
 
-		Dot,
+		Get,
 
 		AddAssign,
 		SubAssign,

@@ -66,7 +66,7 @@ namespace sharpsenLang
 
 		Init,
 
-		Dot,
+		Get,
 	};
 
 	struct Node;
@@ -87,7 +87,7 @@ namespace sharpsenLang
 		size_t _charIndex;
 
 	public:
-		Node(CompilerContext &context, NodeValue value, std::vector<NodePtr> children, size_t lineNumber, size_t charIndex);
+		Node(CompilerContext &context, NodeValue value, std::vector<NodePtr> children, size_t lineNumber, size_t charIndex, bool canBeUndefined = false);
 
 		const NodeValue &getValue() const;
 

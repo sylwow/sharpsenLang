@@ -185,6 +185,11 @@ namespace sharpsenLang
 		return _classes.find(name);
 	}
 
+	const Property *CompilerContext::getClassProperty(const ClassType *ct, std::string_view propertyName) const
+	{
+		return _types.getClassProperty(ct, propertyName);
+	}
+
 	const IdentifierInfo *CompilerContext::createIdentifier(std::string name, TypeHandle typeId)
 	{
 		if (_locals)
