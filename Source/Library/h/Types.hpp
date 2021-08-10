@@ -49,9 +49,15 @@ namespace sharpsenLang
 		std::vector<TypeHandle> innerTypeId;
 	};
 
+	struct Property {
+		size_t index;
+		TypeHandle type;
+	}
+	
 	struct ClassType
 	{
-		std::vector<TypeHandle> properties;
+		std::string name;
+		std::unordered_map<std::string, Property> properties;
 	};
 
 	struct UndefinedInfo
