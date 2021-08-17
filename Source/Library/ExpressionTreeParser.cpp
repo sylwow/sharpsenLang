@@ -13,6 +13,7 @@ namespace sharpsenLang
 		enum struct OperatorPrecedence
 		{
 			Brackets,
+			Get,
 			Postfix,
 			Prefix,
 			Multiplication,
@@ -27,7 +28,6 @@ namespace sharpsenLang
 			LogicalOr,
 			Assignment,
 			Comma,
-			Get,
 		};
 
 		enum struct OperatorAssociativity
@@ -60,6 +60,7 @@ namespace sharpsenLang
 				case NodeOperation::Postdec:
 				case NodeOperation::Index:
 				case NodeOperation::Call:
+				case NodeOperation::Get:
 					precedence = OperatorPrecedence::Postfix;
 					break;
 				case NodeOperation::Preinc:
@@ -130,9 +131,6 @@ namespace sharpsenLang
 					break;
 				case NodeOperation::Comma:
 					precedence = OperatorPrecedence::Comma;
-					break;
-				case NodeOperation::Get:
-					precedence = OperatorPrecedence::Get;
 					break;
 				}
 
@@ -346,6 +344,7 @@ namespace sharpsenLang
 			std::stack<OperatorInfo> operatorStack;
 
 			bool expectedOperand = true;
+			bool objectOperation = false;
 
 			for (; !isEndOfExpression(*it, allowComma); ++it)
 			{
@@ -356,21 +355,8 @@ namespace sharpsenLang
 
 					if (oi.operation == NodeOperation::Get)
 					{
-						++it;
-
-						if (!it->isIdentifier())
-						{
-							throw syntaxError("Expected class property or method name", it->getLineNumber(), it->getCharIndex());
-						}
-
-						operandStack.push(std::make_unique<Node>(
-											  context, it->getIdentifier(), std::vector<NodePtr>(), it->getLineNumber(), it->getCharIndex(), true));
-
-						operatorStack.push(oi);
-
-						popOneOperator(operatorStack, operandStack, context, it->getLineNumber(), it->getCharIndex());
+						objectOperation = true;
 						expectedOperand = false;
-						continue;
 					}
 
 					if (oi.operation == NodeOperation::Call && expectedOperand)
@@ -444,22 +430,22 @@ namespace sharpsenLang
 						{
 							while (true)
 							{
-								bool remove_lvalue = !it->hasValue(ReservedToken::BitwiseAnd);
-								if (!remove_lvalue)
+								bool removeLvalue = !it->hasValue(ReservedToken::BitwiseAnd);
+								if (!removeLvalue)
 								{
 									++it;
 								}
 								NodePtr argument = parseExpressionTreeImpl(context, it, false, false);
-								if (remove_lvalue)
+								if (removeLvalue)
 								{
 									size_t lineNumber = argument->getLineNumber();
 									size_t charIndex = argument->getCharIndex();
-									std::vector<NodePtr> argument_vector;
-									argument_vector.push_back(std::move(argument));
+									std::vector<NodePtr> argumentVector;
+									argumentVector.push_back(std::move(argument));
 									argument = std::make_unique<Node>(
 										context,
 										NodeOperation::Param,
-										std::move(argument_vector),
+										std::move(argumentVector),
 										lineNumber,
 										charIndex);
 								}
@@ -514,7 +500,7 @@ namespace sharpsenLang
 
 					operatorStack.push(oi);
 
-					expectedOperand = (oi.precedence != OperatorPrecedence::Postfix);
+					expectedOperand = (oi.precedence != OperatorPrecedence::Postfix || oi.operation == NodeOperation::Get);
 				}
 				else
 				{
@@ -538,8 +524,9 @@ namespace sharpsenLang
 					else
 					{
 						operandStack.push(std::make_unique<Node>(
-							context, it->getIdentifier(), std::vector<NodePtr>(), it->getLineNumber(), it->getCharIndex()));
+							context, it->getIdentifier(), std::vector<NodePtr>(), it->getLineNumber(), it->getCharIndex(), objectOperation));
 					}
+					objectOperation = false;
 					expectedOperand = false;
 				}
 			}

@@ -97,7 +97,7 @@ namespace sharpsenLang
 		bool isString() const;
 
 		NodeOperation getNodeOperation() const;
-		std::string_view getIdentifier() const;
+		const std::string& getIdentifier() const;
 		double getNumber() const;
 		std::string_view getString() const;
 

@@ -916,6 +916,11 @@ namespace sharpsenLang
 		const ClassType *ct = std::get_if<ClassType>(np->getChildren()[0]->getTypeId());                    \
 		if (ct)                                                                                             \
 		{                                                                                                   \
+			const FunctionType *ft = std::get_if<FunctionType>(np->getTypeId());                            \
+			if (ft)                                                                                         \
+			{                                                                                               \
+				break;                                                                                      \
+			}                                                                                               \
 			const Property *property = context.getClassProperty(ct, np->getChildren()[1]->getIdentifier()); \
                                                                                                             \
 			return ExpressionPtr(                                                                           \
@@ -1084,6 +1089,7 @@ namespace sharpsenLang
 					CHECK_BINARY_OPERATION(ConcatAssign, Lstring, String);
 					CHECK_BINARY_OPERATION(Comma, Void, Lstring);
 					CHECK_INDEX_OPERATION(Lstring, Larray);
+					CHECK_GET_OPERATION(Lstring, Lclass);
 					CHECK_TERNARY_OPERATION(Ternary, Number, Lstring, Lstring);
 				default:
 					throw ExpressionBuilderError();
@@ -1114,6 +1120,7 @@ namespace sharpsenLang
 					CHECK_BINARY_OPERATION(Assign, Larray, Array);
 					CHECK_BINARY_OPERATION(Comma, Void, Larray);
 					CHECK_INDEX_OPERATION(Larray, Larray);
+					CHECK_GET_OPERATION(Larray, Lclass);
 					CHECK_TERNARY_OPERATION(Ternary, Number, Larray, Larray);
 				default:
 					throw ExpressionBuilderError();
@@ -1123,13 +1130,47 @@ namespace sharpsenLang
 			static ExpressionPtr buildFunctionExpression(const NodePtr &np, CompilerContext &context)
 			{
 				CHECK_IDENTIFIER(Lfunction);
-				CHECK_FUNCTION();
+
+				const IdentifierInfo *info = nullptr;
+				if (std::holds_alternative<Identifier>(np->getValue()))
+				{
+					const Identifier &id = std::get<Identifier>(np->getValue());
+					info = context.find(id.name);
+				}
+				else if (std::holds_alternative<NodeOperation>(np->getValue()))
+				{
+					const NodeOperation no = std::get<NodeOperation>(np->getValue());
+					if (no == NodeOperation::Get)
+					{
+						if (const ClassType *ct = std::get_if<ClassType>(np->getChildren()[0]->getTypeId()))
+						{
+							if (np->getChildren()[1]->isIdentifier())
+							{
+								auto name = np->getChildren()[1]->getIdentifier();
+								info = context.find(ct->name + "::" + name);
+							}
+						}
+					}
+				}
+
+				if (info)
+				{
+					switch (info->getScope())
+					{
+					case IdentifierScope::GlobalVariable:
+					case IdentifierScope::LocalVariable:
+						break;
+					case IdentifierScope::Function:
+						return std::make_unique<FunctionExpression<R>>(info->index());
+					}
+				}
 
 				switch (std::get<NodeOperation>(np->getValue()))
 				{
 					CHECK_BINARY_OPERATION(Comma, Void, Function);
 					CHECK_INDEX_OPERATION(Function, Array);
 					CHECK_TERNARY_OPERATION(Ternary, Number, Function, Function);
+					CHECK_GET_OPERATION(Lfunction, Lclass);
 					CHECK_CALL_OPERATION(Function);
 				default:
 					throw ExpressionBuilderError();
@@ -1175,6 +1216,7 @@ namespace sharpsenLang
 					CHECK_BINARY_OPERATION(Assign, Ltuple, Tuple);
 					CHECK_BINARY_OPERATION(Comma, Void, Ltuple);
 					CHECK_INDEX_OPERATION(Ltuple, Larray);
+					CHECK_GET_OPERATION(Ltuple, Lclass);
 					CHECK_TERNARY_OPERATION(Ternary, Number, Ltuple, Ltuple);
 					CHECK_CALL_OPERATION(Ltuple);
 				default:
@@ -1205,6 +1247,7 @@ namespace sharpsenLang
 					CHECK_BINARY_OPERATION(Assign, Lclass, Class);
 					CHECK_BINARY_OPERATION(Comma, Void, Lclass);
 					CHECK_TERNARY_OPERATION(Ternary, Number, Lclass, Lclass);
+					CHECK_GET_OPERATION(Lclass, Lclass);
 					CHECK_CALL_OPERATION(Lclass);
 				default:
 					throw ExpressionBuilderError();

@@ -1,18 +1,31 @@
 public function void main() {
-	myClass x;
+	first x;
 
-	x.field = 9;
+	x.str = 90;
+	//number tt = inc();
+	string tt = inc(&x);
 
-	number m = x.field;
+	trace(toString(tt));
+}
 
-	trace(toString(m));
+class first {
+	number str;
+
+	function number increment() {
+		number g = 10;
+		g++;
+		return g;
+	}
+}
+
+function number inc(first& f) {
+	return ++f.str;
+}
+
+class sec {
+	first str;
 }
 
 class myClass {
-	number field;
-
-	function void increment() {
-		number g = 10;
-		g++;
-	}
+	sec field;
 }

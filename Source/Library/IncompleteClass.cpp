@@ -58,34 +58,33 @@ namespace sharpsenLang
 
 		while (!it->hasValue(ReservedToken::CloseCurly))
 		{
-			if (!std::holds_alternative<ReservedToken>(it->getValue()))
+			if (!it->isIdentifier() && !it->isReservedToken())
 			{
 				throw "todo error";
 			}
 
 			bool publicFunction = false;
 
-			switch (it->getReservedToken())
+			if (it->isReservedToken() && it->getReservedToken() == ReservedToken::KwPublic)
 			{
-			case ReservedToken::KwPublic:
 				publicFunction = true;
 				if (!(++it)->hasValue(ReservedToken::KwFunction))
 				{
 					throw "todo error";
 				}
-			case ReservedToken::KwFunction:
+			}
+			else if (it->isReservedToken() && it->getReservedToken() == ReservedToken::KwFunction)
 			{
 				size_t lineNumber = it->getLineNumber();
 				size_t charIndex = it->getCharIndex();
 				const IncompleteFunction &f = _incompleteMethods.emplace_back(ctx, it, ret.name);
-				break;
 			}
-			default:
+			else
+			{
 				auto property = GetVariableDefinition(ctx, it);
 				ret.properties.emplace_back(property.second);
 				ct.properties[property.second] = {index++, property.first};
 				parseTokenValue(ctx, it, ReservedToken::Semicolon);
-				break;
 			}
 		}
 
@@ -116,18 +115,8 @@ namespace sharpsenLang
 		return _decl;
 	}
 
-	Class IncompleteClass::compile(CompilerContext &ctx)
+	std::vector<IncompleteFunction> &IncompleteClass::getIncompletedMethods()
 	{
-		Class cl;
-
-		for (auto &method : _incompleteMethods)
-		{
-			method.compile(ctx);
-		}
-
-		for (auto &property : _decl.properties)
-		{
-		}
-		return cl;
+		return _incompleteMethods;
 	}
 }

@@ -650,7 +650,6 @@ namespace sharpsenLang
 		std::vector<Expression<Lvalue>::Ptr> initializers;
 
 		std::vector<IncompleteFunction> incompleteFunctions;
-		std::vector<IncompleteClass> incompleteClasses;
 		std::unordered_map<std::string, size_t> publicFunctions;
 
 		while (it)
@@ -702,8 +701,11 @@ namespace sharpsenLang
 			{
 				size_t lineNumber = it->getLineNumber();
 				size_t charIndex = it->getCharIndex();
-				incompleteClasses.emplace_back(ctx, it);
-
+				IncompleteClass c(ctx, it);
+				for (IncompleteFunction &f : c.getIncompletedMethods())
+				{
+					incompleteFunctions.emplace_back(std::move(f));
+				}
 				break;
 			}
 			default:
@@ -737,11 +739,6 @@ namespace sharpsenLang
 		for (IncompleteFunction &f : incompleteFunctions)
 		{
 			functions.emplace_back(f.compile(ctx));
-		}
-
-		for (IncompleteClass &c : incompleteClasses)
-		{
-			classes.emplace_back(c.compile(ctx));
 		}
 
 		return RuntimeContext(std::move(initializers), std::move(functions), std::move(classes), std::move(publicFunctions));

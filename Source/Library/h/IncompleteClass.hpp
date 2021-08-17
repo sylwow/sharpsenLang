@@ -39,6 +39,8 @@ namespace sharpsenLang
 		const ClassDeclaration &getDecl() const;
 
 		Class compile(CompilerContext &ctx);
+
+		std::vector<IncompleteFunction>& getIncompletedMethods();
 	
 	private:
 		ClassDeclaration parseClassDeclaration(CompilerContext &ctx, TokensIterator &it);

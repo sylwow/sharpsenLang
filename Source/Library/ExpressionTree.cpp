@@ -320,14 +320,23 @@ namespace sharpsenLang
 						{
 							if (_children[1]->isIdentifier())
 							{
-								auto propName = _children[1]->getIdentifier();
-								if (auto property = context.getClassProperty(ct, propName))
+								auto name = _children[1]->getIdentifier();
+								if (auto property = context.getClassProperty(ct, name))
 								{
 									_typeId = property->type;
 									_lvalue = true;
 									return;
 								}
-								throw semanticError("Property does not exists", _lineNumber, _charIndex);
+								else if (const auto function = context.find(ct->name + "::" + name))
+								{
+									if (const FunctionType *ft = std::get_if<FunctionType>(function->typeId()))
+									{
+										_typeId = function->typeId();
+										_lvalue = false;
+										return;
+									}
+								}
+								throw semanticError("Property of method does not exists", _lineNumber, _charIndex);
 							}
 							throw semanticError("Expected object property or method name", _lineNumber, _charIndex);
 						}
@@ -369,7 +378,7 @@ namespace sharpsenLang
 		return std::get<NodeOperation>(_value);
 	}
 
-	std::string_view Node::getIdentifier() const
+	const std::string &Node::getIdentifier() const
 	{
 		return std::get<Identifier>(_value).name;
 	}
