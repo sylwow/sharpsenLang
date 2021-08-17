@@ -774,19 +774,39 @@ namespace sharpsenLang
 		}                                                                            \
 	}
 
-#define CHECK_FUNCTION()                                                   \
-	if (std::holds_alternative<Identifier>(np->getValue()))                \
-	{                                                                      \
-		const Identifier &id = std::get<Identifier>(np->getValue());       \
-		const IdentifierInfo *info = context.find(id.name);                \
-		switch (info->getScope())                                          \
-		{                                                                  \
-		case IdentifierScope::GlobalVariable:                              \
-		case IdentifierScope::LocalVariable:                               \
-			break;                                                         \
-		case IdentifierScope::Function:                                    \
-			return std::make_unique<FunctionExpression<R>>(info->index()); \
-		}                                                                  \
+#define CHECK_FUNCTION()                                                                         \
+	const IdentifierInfo *info = nullptr;                                                        \
+	if (std::holds_alternative<Identifier>(np->getValue()))                                      \
+	{                                                                                            \
+		const Identifier &id = std::get<Identifier>(np->getValue());                             \
+		info = context.find(id.name);                                                            \
+	}                                                                                            \
+	else if (std::holds_alternative<NodeOperation>(np->getValue()))                              \
+	{                                                                                            \
+		const NodeOperation no = std::get<NodeOperation>(np->getValue());                        \
+		if (no == NodeOperation::Get)                                                            \
+		{                                                                                        \
+			if (const ClassType *ct = std::get_if<ClassType>(np->getChildren()[0]->getTypeId())) \
+			{                                                                                    \
+				if (np->getChildren()[1]->isIdentifier())                                        \
+				{                                                                                \
+					auto name = np->getChildren()[1]->getIdentifier();                           \
+					info = context.find(ct->name + "::" + name);                                 \
+				}                                                                                \
+			}                                                                                    \
+		}                                                                                        \
+	}                                                                                            \
+                                                                                                 \
+	if (info)                                                                                    \
+	{                                                                                            \
+		switch (info->getScope())                                                                \
+		{                                                                                        \
+		case IdentifierScope::GlobalVariable:                                                    \
+		case IdentifierScope::LocalVariable:                                                     \
+			break;                                                                               \
+		case IdentifierScope::Function:                                                          \
+			return std::make_unique<FunctionExpression<R>>(info->index());                       \
+		}                                                                                        \
 	}
 
 #define CHECK_UNARY_OPERATION(name, T1)                \
@@ -1140,40 +1160,7 @@ namespace sharpsenLang
 			static ExpressionPtr buildFunctionExpression(const NodePtr &np, CompilerContext &context)
 			{
 				CHECK_IDENTIFIER(Lfunction);
-
-				const IdentifierInfo *info = nullptr;
-				if (std::holds_alternative<Identifier>(np->getValue()))
-				{
-					const Identifier &id = std::get<Identifier>(np->getValue());
-					info = context.find(id.name);
-				}
-				else if (std::holds_alternative<NodeOperation>(np->getValue()))
-				{
-					const NodeOperation no = std::get<NodeOperation>(np->getValue());
-					if (no == NodeOperation::Get)
-					{
-						if (const ClassType *ct = std::get_if<ClassType>(np->getChildren()[0]->getTypeId()))
-						{
-							if (np->getChildren()[1]->isIdentifier())
-							{
-								auto name = np->getChildren()[1]->getIdentifier();
-								info = context.find(ct->name + "::" + name);
-							}
-						}
-					}
-				}
-
-				if (info)
-				{
-					switch (info->getScope())
-					{
-					case IdentifierScope::GlobalVariable:
-					case IdentifierScope::LocalVariable:
-						break;
-					case IdentifierScope::Function:
-						return std::make_unique<FunctionExpression<R>>(info->index());
-					}
-				}
+				CHECK_FUNCTION();
 
 				switch (std::get<NodeOperation>(np->getValue()))
 				{
