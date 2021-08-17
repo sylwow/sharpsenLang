@@ -935,31 +935,41 @@ namespace sharpsenLang
 		}                                                                                                   \
 	}
 
-#define CHECK_CALL_OPERATION(T)                                                                              \
-	case NodeOperation::Call:                                                                                \
-	{                                                                                                        \
-		std::vector<Expression<Lvalue>::Ptr> arguments;                                                      \
-		const FunctionType *ft = std::get_if<FunctionType>(np->getChildren()[0]->getTypeId());               \
-		for (size_t i = 1; i < np->getChildren().size(); ++i)                                                \
-		{                                                                                                    \
-			const NodePtr &child = np->getChildren()[i];                                                     \
-			if (                                                                                             \
-				child->isNodeOperation() &&                                                                  \
-				std::get<NodeOperation>(child->getValue()) == NodeOperation::Param)                          \
-			{                                                                                                \
-				arguments.push_back(                                                                         \
-					buildLvalueExpression(ft->paramTypeId[i - 1].typeId, child->getChildren()[0], context)); \
-			}                                                                                                \
-			else                                                                                             \
-			{                                                                                                \
-				arguments.push_back(                                                                         \
-					ExpressionBuilder<Lvalue>::buildExpression(child, context));                             \
-			}                                                                                                \
-		}                                                                                                    \
-		return ExpressionPtr(                                                                                \
-			std::make_unique<CallExpression<R, T>>(                                                          \
-				ExpressionBuilder<Function>::buildExpression(np->getChildren()[0], context),                 \
-				std::move(arguments)));                                                                      \
+#define CHECK_CALL_OPERATION(T)                                                                                               \
+	case NodeOperation::Call:                                                                                                 \
+	{                                                                                                                         \
+		std::vector<Expression<Lvalue>::Ptr> arguments;                                                                       \
+		auto &firstChild = np->getChildren()[0];                                                                              \
+		const FunctionType *ft = std::get_if<FunctionType>(firstChild->getTypeId());                                          \
+		if (std::holds_alternative<NodeOperation>(firstChild->getValue()))                                                    \
+		{                                                                                                                     \
+			const NodeOperation no = std::get<NodeOperation>(firstChild->getValue());                                         \
+			if (no == NodeOperation::Get)                                                                                     \
+			{                                                                                                                 \
+				arguments.push_back(                                                                                          \
+					buildLvalueExpression(firstChild->getChildren()[0]->getTypeId(), firstChild->getChildren()[0], context)); \
+			}                                                                                                                 \
+		}                                                                                                                     \
+		for (size_t i = 1; i < np->getChildren().size(); ++i)                                                                 \
+		{                                                                                                                     \
+			const NodePtr &child = np->getChildren()[i];                                                                      \
+			if (                                                                                                              \
+				child->isNodeOperation() &&                                                                                   \
+				std::get<NodeOperation>(child->getValue()) == NodeOperation::Param)                                           \
+			{                                                                                                                 \
+				arguments.push_back(                                                                                          \
+					buildLvalueExpression(ft->paramTypeId[i - 1].typeId, child->getChildren()[0], context));                  \
+			}                                                                                                                 \
+			else                                                                                                              \
+			{                                                                                                                 \
+				arguments.push_back(                                                                                          \
+					ExpressionBuilder<Lvalue>::buildExpression(child, context));                                              \
+			}                                                                                                                 \
+		}                                                                                                                     \
+		return ExpressionPtr(                                                                                                 \
+			std::make_unique<CallExpression<R, T>>(                                                                           \
+				ExpressionBuilder<Function>::buildExpression(np->getChildren()[0], context),                                  \
+				std::move(arguments)));                                                                                       \
 	}
 
 		template <typename R>
@@ -1412,7 +1422,6 @@ namespace sharpsenLang
 					},
 					[&](const ClassType &)
 					{
-						throw ExpressionBuilderError();
 						return ExpressionBuilder<Class>::buildParamExpression(np, context);
 					}},
 				*typeId);

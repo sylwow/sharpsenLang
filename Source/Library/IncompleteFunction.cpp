@@ -113,6 +113,10 @@ namespace sharpsenLang
 
 		const FunctionType *ft = std::get_if<FunctionType>(_decl.typeId);
 
+		if (_decl.isMethod())
+		{
+			ctx.createParam("this", _decl.parentTypeId);
+		}
 		for (int i = 0; i < int(_decl.params.size()); ++i)
 		{
 			ctx.createParam(std::move(_decl.params[i]), ft->paramTypeId[i].typeId);

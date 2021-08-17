@@ -277,6 +277,7 @@ namespace sharpsenLang
 						{
 							_typeId = ft->returnTypeId;
 							_lvalue = false;
+			
 							if (ft->paramTypeId.size() + 1 != _children.size())
 							{
 								throw semanticError("Wrong number of arguments. "

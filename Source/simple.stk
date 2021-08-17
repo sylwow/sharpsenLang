@@ -3,7 +3,7 @@ public function void main() {
 
 	x.str = 90;
 	//number tt = inc();
-	string tt = inc(&x);
+	number tt = x.increment();
 
 	trace(toString(tt));
 }
@@ -12,9 +12,7 @@ class first {
 	number str;
 
 	function number increment() {
-		number g = 10;
-		g++;
-		return g;
+		return 2*this.str;
 	}
 }
 
